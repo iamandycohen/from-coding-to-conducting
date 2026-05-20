@@ -1464,6 +1464,50 @@ E · done    · S · blocked: false`}
       </PillRow>
     </Slide>,
 
+    // 19c. Demo 3 · why — the prose has gaps; sampling fills them
+    <Slide key="demo3-why" className="justify-center">
+      <Eyebrow>Pattern 02 · why three answers</Eyebrow>
+      <div className="mt-3 max-w-6xl">
+        <H2>
+          The prose looks complete.{" "}
+          <Accent color="danger">It has a gap.</Accent>
+        </H2>
+        <Lede>
+          &ldquo;Prefer the smallest sizing. On ties, take the earliest in the
+          file.&rdquo; sounds airtight. Then the agent meets a real tie and
+          discovers the rule doesn&rsquo;t say what &ldquo;earliest&rdquo;
+          means at the byte level — and the model has to guess.
+        </Lede>
+      </div>
+      <div className="mt-6 grid grid-cols-1 md:grid-cols-3 gap-4 w-full max-w-7xl">
+        <Panel eyebrow="run 1 · reasoning" accent="danger">
+          <div className="text-sm md:text-base italic leading-snug text-[color:var(--fg-soft)]">
+            &ldquo;Earliest in the file means lowest line number. A is on
+            line 12, B is on line 14. Picking <span className="not-italic font-semibold text-[color:var(--fg)]">A</span>.&rdquo;
+          </div>
+        </Panel>
+        <Panel eyebrow="run 2 · reasoning" accent="danger">
+          <div className="text-sm md:text-base italic leading-snug text-[color:var(--fg-soft)]">
+            &ldquo;A and B are equivalent on every stated criterion. The
+            instruction is ambiguous; picking <span className="not-italic font-semibold text-[color:var(--fg)]">B</span> to
+            avoid bias toward the first match.&rdquo;
+          </div>
+        </Panel>
+        <Panel eyebrow="run 3 · reasoning" accent="danger">
+          <div className="text-sm md:text-base italic leading-snug text-[color:var(--fg-soft)]">
+            &ldquo;Both qualify. This is a judgment call I should defer —
+            returning <span className="not-italic font-semibold text-[color:var(--fg)]">A or B</span> and
+            asking the author to choose.&rdquo;
+          </div>
+        </Panel>
+      </div>
+      <FootNote>
+        All three are reasonable readings of the same sentence. That&rsquo;s
+        the problem — the rule wasn&rsquo;t actually a rule, it was a region
+        the model got to interpret.
+      </FootNote>
+    </Slide>,
+
     // 20. Demo 3 · the change — encode the rule
     <Slide key="demo3-change" className="justify-center">
       <Eyebrow>Pattern 02 · the change</Eyebrow>
@@ -1517,6 +1561,53 @@ A`}
         <Pill variant="check">tiebreaker in code</Pill>
         <Pill variant="check">testable, reviewable, reproducible</Pill>
       </PillRow>
+    </Slide>,
+
+    // 21b. Demo 3 · the hybrid — encoding doesn't kill the LLM, it re-aims it
+    <Slide key="demo3-hybrid" className="justify-center">
+      <Eyebrow>Pattern 02 · the hybrid</Eyebrow>
+      <div className="mt-3 max-w-6xl">
+        <H2>
+          Encoding doesn&rsquo;t{" "}
+          <Accent color="danger">replace</Accent> the LLM.{" "}
+          It <Accent color="success">re-aims</Accent> it.
+        </H2>
+        <Lede>
+          The function owns the spine of the workflow. The LLM gets summoned
+          at named seams — the parts that actually need reading,
+          summarizing, or judgment.
+        </Lede>
+      </div>
+      <div className="mt-6 grid grid-cols-1 md:grid-cols-2 gap-4 w-full max-w-7xl">
+        <Panel eyebrow="the spine · code owns this" accent="success">
+          <ul className="space-y-2 text-base md:text-lg leading-snug">
+            <li className="flex gap-2"><span className="text-[color:var(--success)] font-mono">▸</span> filter by status = planned</li>
+            <li className="flex gap-2"><span className="text-[color:var(--success)] font-mono">▸</span> exclude blocked = true</li>
+            <li className="flex gap-2"><span className="text-[color:var(--success)] font-mono">▸</span> sort by size (S, M, L)</li>
+            <li className="flex gap-2"><span className="text-[color:var(--success)] font-mono">▸</span> sort by file position</li>
+            <li className="flex gap-2"><span className="text-[color:var(--success)] font-mono">▸</span> mark as in-progress, persist</li>
+          </ul>
+          <div className="mt-4 text-xs uppercase tracking-widest font-mono text-[color:var(--fg-soft)]">
+            deterministic · unit-testable · diffable
+          </div>
+        </Panel>
+        <Panel eyebrow="the seams · LLM owns these" accent="accent-2">
+          <ul className="space-y-2 text-base md:text-lg leading-snug">
+            <li className="flex gap-2"><span className="text-[color:var(--accent-2)] font-mono">▸</span> read the finding&rsquo;s context</li>
+            <li className="flex gap-2"><span className="text-[color:var(--accent-2)] font-mono">▸</span> draft the migration change</li>
+            <li className="flex gap-2"><span className="text-[color:var(--accent-2)] font-mono">▸</span> summarize what changed and why</li>
+            <li className="flex gap-2"><span className="text-[color:var(--accent-2)] font-mono">▸</span> flag anything ambiguous for review</li>
+            <li className="flex gap-2"><span className="text-[color:var(--accent-2)] font-mono">▸</span> write the commit message</li>
+          </ul>
+          <div className="mt-4 text-xs uppercase tracking-widest font-mono text-[color:var(--fg-soft)]">
+            judgment · reading · writing
+          </div>
+        </Panel>
+      </div>
+      <FootNote>
+        The deterministic spine doesn&rsquo;t demote the agent. It gives the
+        agent&rsquo;s judgment somewhere reliable to land.
+      </FootNote>
     </Slide>,
 
     // 22. Lesson 3
@@ -1644,9 +1735,9 @@ A`}
           <Accent color="accent-2">told three times</Accent>.
         </H2>
         <Lede>
-          Every demo you just saw was the same arc — trust the agent too
-          broadly, watch it fail in a specific way, narrow the boundary,
-          watch it get better at the broad work.
+          Every situation we just walked through was the same arc — trust
+          the agent too broadly, watch it fail in a specific way, narrow
+          the boundary, watch it get better at the broad work.
         </Lede>
       </div>
       <div className="mt-6 w-full max-w-7xl">
