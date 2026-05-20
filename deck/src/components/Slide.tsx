@@ -129,3 +129,371 @@ export function FootNote({ children }: { children: React.ReactNode }) {
     </div>
   );
 }
+
+export function ProofStrip({ children }: { children: React.ReactNode }) {
+  return (
+    <div className="mt-6 pt-4 border-t border-[color:var(--border)] text-xs md:text-sm text-[color:var(--fg-soft)] font-mono opacity-70 truncate">
+      Proof: {children}
+    </div>
+  );
+}
+
+export function Author({
+  name,
+  url,
+  event,
+}: {
+  name: string;
+  url: string;
+  event: string;
+}) {
+  return (
+    <div className="mt-auto flex flex-wrap items-baseline gap-x-6 gap-y-2 text-[color:var(--fg-soft)] text-base md:text-lg">
+      <span className="text-[color:var(--fg)] text-lg md:text-xl font-medium">
+        {name}
+      </span>
+      <span className="opacity-30">·</span>
+      <a
+        href={`https://${url}`}
+        className="hover:text-[color:var(--accent)] transition-colors"
+      >
+        {url}
+      </a>
+      <span className="opacity-30">·</span>
+      <span className="numeral">{event}</span>
+    </div>
+  );
+}
+
+export function Quadrant({
+  items,
+}: {
+  items: {
+    eyebrow: string;
+    title: string;
+    body: string;
+    color?: "accent" | "accent-2" | "accent-3" | "danger";
+  }[];
+}) {
+  const colorMap: Record<string, string> = {
+    accent: "border-[color:var(--accent)]/40 text-[color:var(--accent)]",
+    "accent-2":
+      "border-[color:var(--accent-2)]/40 text-[color:var(--accent-2)]",
+    "accent-3":
+      "border-[color:var(--accent-3)]/40 text-[color:var(--accent-3)]",
+    danger: "border-[color:var(--danger)]/40 text-[color:var(--danger)]",
+  };
+  return (
+    <div className="grid grid-cols-1 md:grid-cols-2 gap-5 md:gap-6 w-full max-w-7xl">
+      {items.map((it, i) => {
+        const cls = colorMap[it.color ?? "accent"];
+        const [borderCls, textCls] = cls.split(" ");
+        return (
+          <div
+            key={i}
+            className={`rounded-2xl border ${borderCls} bg-[color:var(--bg-soft)]/60 p-6 md:p-7 flex flex-col gap-3`}
+          >
+            <div
+              className={`uppercase tracking-widest text-xs ${textCls} font-mono`}
+            >
+              {it.eyebrow}
+            </div>
+            <div className="text-xl md:text-2xl font-semibold leading-snug">
+              {it.title}
+            </div>
+            <div className="text-sm md:text-base text-[color:var(--fg-soft)] leading-relaxed">
+              {it.body}
+            </div>
+          </div>
+        );
+      })}
+    </div>
+  );
+}
+
+export function TwoCol({
+  left,
+  right,
+}: {
+  left: { eyebrow: string; lines: React.ReactNode[] };
+  right: { eyebrow: string; lines: React.ReactNode[] };
+}) {
+  return (
+    <div className="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8 w-full max-w-7xl">
+      <div className="rounded-2xl border border-[color:var(--accent-2)]/40 bg-[color:var(--bg-soft)]/60 p-7 md:p-9 flex flex-col gap-4">
+        <div className="uppercase tracking-widest text-xs text-[color:var(--accent-2)] font-mono">
+          {left.eyebrow}
+        </div>
+        <ul className="space-y-3 text-lg md:text-xl leading-snug">
+          {left.lines.map((l, i) => (
+            <li key={i} className="flex gap-3">
+              <span className="text-[color:var(--accent-2)] mt-1">—</span>
+              <span>{l}</span>
+            </li>
+          ))}
+        </ul>
+      </div>
+      <div className="rounded-2xl border border-[color:var(--accent)]/40 bg-[color:var(--bg-soft)]/60 p-7 md:p-9 flex flex-col gap-4">
+        <div className="uppercase tracking-widest text-xs text-[color:var(--accent)] font-mono">
+          {right.eyebrow}
+        </div>
+        <ul className="space-y-3 text-lg md:text-xl leading-snug">
+          {right.lines.map((l, i) => (
+            <li key={i} className="flex gap-3">
+              <span className="text-[color:var(--accent)] mt-1">—</span>
+              <span>{l}</span>
+            </li>
+          ))}
+        </ul>
+      </div>
+    </div>
+  );
+}
+
+export function RolesDiagram() {
+  const roles = [
+    {
+      label: "Orchestrator",
+      sub: "decides what should happen next",
+      color: "var(--accent-2)",
+    },
+    {
+      label: "Executor",
+      sub: "performs one bounded task",
+      color: "var(--accent)",
+    },
+    {
+      label: "MCP tool",
+      sub: "gives the agent facts or actions",
+      color: "var(--accent-3)",
+    },
+    {
+      label: "Deterministic workflow",
+      sub: "handles what must not drift",
+      color: "var(--success)",
+    },
+  ];
+  return (
+    <div className="grid grid-cols-1 md:grid-cols-4 gap-4 md:gap-5 w-full max-w-7xl">
+      {roles.map((r, i) => (
+        <div
+          key={i}
+          className="rounded-2xl bg-[color:var(--bg-soft)]/60 p-5 md:p-6 flex flex-col gap-2 border"
+          style={{ borderColor: `color-mix(in srgb, ${r.color} 40%, transparent)` }}
+        >
+          <div
+            className="uppercase tracking-widest text-xs font-mono"
+            style={{ color: r.color }}
+          >
+            {i === 3 ? "code" : "agent"}
+          </div>
+          <div className="text-xl md:text-2xl font-semibold leading-tight">
+            {r.label}
+          </div>
+          <div className="text-sm md:text-base text-[color:var(--fg-soft)] leading-relaxed">
+            {r.sub}
+          </div>
+        </div>
+      ))}
+    </div>
+  );
+}
+
+// ─────────────────────────────────────────────────────────────
+// Demo narration primitives
+// ─────────────────────────────────────────────────────────────
+
+export function Panel({
+  eyebrow,
+  title,
+  children,
+  accent = "neutral",
+  mono = false,
+  className = "",
+}: {
+  eyebrow?: string;
+  title?: React.ReactNode;
+  children: React.ReactNode;
+  accent?: "neutral" | "danger" | "success" | "accent" | "accent-2" | "accent-3";
+  mono?: boolean;
+  className?: string;
+}) {
+  const borderMap: Record<string, string> = {
+    neutral: "border-[color:var(--border)]",
+    danger: "border-[color:var(--danger)]/50",
+    success: "border-[color:var(--success)]/50",
+    accent: "border-[color:var(--accent)]/40",
+    "accent-2": "border-[color:var(--accent-2)]/40",
+    "accent-3": "border-[color:var(--accent-3)]/40",
+  };
+  const eyeColorMap: Record<string, string> = {
+    neutral: "text-[color:var(--fg-soft)]",
+    danger: "text-[color:var(--danger)]",
+    success: "text-[color:var(--success)]",
+    accent: "text-[color:var(--accent)]",
+    "accent-2": "text-[color:var(--accent-2)]",
+    "accent-3": "text-[color:var(--accent-3)]",
+  };
+  return (
+    <div
+      className={`rounded-2xl border ${borderMap[accent]} bg-[color:var(--bg-soft)]/60 p-6 md:p-7 flex flex-col gap-3 ${className}`}
+    >
+      {eyebrow && (
+        <div
+          className={`uppercase tracking-widest text-xs font-mono ${eyeColorMap[accent]}`}
+        >
+          {eyebrow}
+        </div>
+      )}
+      {title && (
+        <div className="text-lg md:text-xl font-semibold leading-snug">
+          {title}
+        </div>
+      )}
+      <div
+        className={
+          mono
+            ? "font-mono text-sm md:text-base text-[color:var(--fg)]/90 leading-relaxed whitespace-pre-wrap"
+            : "text-base md:text-lg text-[color:var(--fg-soft)] leading-relaxed"
+        }
+      >
+        {children}
+      </div>
+    </div>
+  );
+}
+
+export function Pill({
+  variant = "neutral",
+  children,
+}: {
+  variant?: "violation" | "check" | "neutral" | "danger" | "success";
+  children: React.ReactNode;
+}) {
+  const map: Record<string, { ring: string; text: string; mark: string }> = {
+    violation: {
+      ring: "border-[color:var(--danger)]/60 bg-[color:var(--danger)]/10",
+      text: "text-[color:var(--danger)]",
+      mark: "✗",
+    },
+    danger: {
+      ring: "border-[color:var(--danger)]/60 bg-[color:var(--danger)]/10",
+      text: "text-[color:var(--danger)]",
+      mark: "",
+    },
+    check: {
+      ring: "border-[color:var(--success)]/60 bg-[color:var(--success)]/10",
+      text: "text-[color:var(--success)]",
+      mark: "✓",
+    },
+    success: {
+      ring: "border-[color:var(--success)]/60 bg-[color:var(--success)]/10",
+      text: "text-[color:var(--success)]",
+      mark: "",
+    },
+    neutral: {
+      ring: "border-[color:var(--border)] bg-[color:var(--bg-soft)]/40",
+      text: "text-[color:var(--fg-soft)]",
+      mark: "",
+    },
+  };
+  const v = map[variant];
+  return (
+    <span
+      className={`inline-flex items-center gap-2 rounded-full border px-4 py-1.5 text-sm md:text-base font-medium ${v.ring} ${v.text}`}
+    >
+      {v.mark && <span className="font-bold">{v.mark}</span>}
+      <span>{children}</span>
+    </span>
+  );
+}
+
+export function PillRow({
+  children,
+  className = "",
+}: {
+  children: React.ReactNode;
+  className?: string;
+}) {
+  return (
+    <div className={`flex flex-wrap gap-3 ${className}`}>{children}</div>
+  );
+}
+
+export function ScoreRow({
+  label,
+  score,
+  max,
+  variant = "neutral",
+  note,
+}: {
+  label: string;
+  score: number;
+  max: number;
+  variant?: "winner-wrong" | "winner-right" | "neutral";
+  note?: string;
+}) {
+  const pct = Math.max(2, Math.round((score / max) * 100));
+  const colorMap = {
+    "winner-wrong": "bg-[color:var(--danger)]",
+    "winner-right": "bg-[color:var(--success)]",
+    neutral: "bg-[color:var(--fg-soft)]/40",
+  };
+  const labelColor = {
+    "winner-wrong": "text-[color:var(--danger)]",
+    "winner-right": "text-[color:var(--success)]",
+    neutral: "text-[color:var(--fg-soft)]",
+  };
+  return (
+    <div className="grid grid-cols-[12rem_1fr_auto] items-center gap-4">
+      <div className={`font-mono text-sm md:text-base ${labelColor[variant]}`}>
+        {label}
+      </div>
+      <div className="h-3 rounded-full bg-[color:var(--bg-soft)]/80 overflow-hidden border border-[color:var(--border)]">
+        <div
+          className={`h-full ${colorMap[variant]}`}
+          style={{ width: `${pct}%` }}
+        />
+      </div>
+      <div
+        className={`font-mono text-sm md:text-base tabular-nums w-16 text-right ${labelColor[variant]}`}
+      >
+        {score}
+        {note && (
+          <span className="ml-2 text-xs uppercase tracking-widest opacity-70">
+            {note}
+          </span>
+        )}
+      </div>
+    </div>
+  );
+}
+
+export function DocChip({
+  id,
+  topic,
+  highlight = "neutral",
+}: {
+  id: string;
+  topic: string;
+  highlight?: "neutral" | "danger" | "success" | "dim";
+}) {
+  const map = {
+    neutral: "border-[color:var(--border)] text-[color:var(--fg)]",
+    danger:
+      "border-[color:var(--danger)]/60 bg-[color:var(--danger)]/10 text-[color:var(--danger)]",
+    success:
+      "border-[color:var(--success)]/60 bg-[color:var(--success)]/10 text-[color:var(--success)]",
+    dim: "border-[color:var(--border)] opacity-40 text-[color:var(--fg-soft)]",
+  };
+  return (
+    <div
+      className={`rounded-xl border px-4 py-3 flex flex-col gap-1 ${map[highlight]}`}
+    >
+      <div className="font-mono text-sm md:text-base">{id}</div>
+      <div className="text-xs uppercase tracking-widest text-[color:var(--fg-soft)]">
+        {topic}
+      </div>
+    </div>
+  );
+}

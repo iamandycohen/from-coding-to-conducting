@@ -8,8 +8,8 @@
     "node": ">=20"
   },
   "scripts": {
-    "demo:1": "tsx 01-strict-boundary/run.ts",
-    "demo:2": "tsx 02-lint-catches-lie/run.ts",
+    "demo:1": "tsx 01-release-notes/run.ts",
+    "demo:2": "tsx 02-context-rot/run.ts",
     "demo:3:cli": "tsx 03-skill-vs-cli/run-cli.ts"
   },
   "dependencies": {

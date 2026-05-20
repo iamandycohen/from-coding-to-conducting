@@ -17,12 +17,17 @@ const TRACKER = resolve(HERE, "tracker.demo.yaml");
 const PICKER = resolve(HERE, "picker.ts");
 
 async function main(): Promise<void> {
-  // Act 1 — THE PROBLEM
-  section("THE PROBLEM");
-  info("Same rules. Same tracker. Two engines.");
-  info("One reads the rules in English (an LLM).");
-  info("One reads them in TypeScript (a function).");
-  info("Watch which one drifts.");
+  // Act 1 — THE STORY
+  section("THE STORY");
+  info("Tracker state used to live inside the agent —");
+  info("described in prose, interpreted every time.");
+  info("It drifted. Different runs picked different");
+  info("findings. State was never wrong, but it was");
+  info("never the same twice.");
+  raw("");
+  info("So we pulled it out of the prompt and into");
+  info("code. A deterministic CLI. Same input, same");
+  info("output. Forever.");
   await pause();
 
   // Act 2 — THE LLM ENGINE (instructions for the speaker)
@@ -62,12 +67,13 @@ async function main(): Promise<void> {
   // Act 5 — THE LESSON
   lesson(
     [
-      "Same rules. Same tracker file. The only thing",
-      "that changed is whether a language model",
-      "interpreted the rules in English, or a function",
-      "executed them in code.",
+      "A workflow described to an agent is",
+      "still being interpreted.",
       "",
-      "The agents got smaller. The system got reliable.",
+      "A workflow encoded in code is enforced.",
+      "",
+      "Both implementations are honest.",
+      "Only one is reproducible.",
     ].join("\n"),
   );
 }
