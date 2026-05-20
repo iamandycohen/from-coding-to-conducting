@@ -285,6 +285,104 @@ async function validateRender(url, marker) {
       </ProofStrip>
     </Slide>,
 
+    // 6b. Why an Executor exists — bounded agent, same idea as bounded tool
+    <Slide key="why-executor" className="justify-center">
+      <Eyebrow>About that split</Eyebrow>
+      <div className="mt-3 max-w-6xl">
+        <H2>
+          One agent can&rsquo;t be{" "}
+          <Accent color="accent-2">planning the migration</Accent>{" "}
+          and{" "}
+          <Accent>doing it</Accent>.
+        </H2>
+        <Lede>
+          Same context can&rsquo;t carry &ldquo;where are we in the
+          200-finding list&rdquo; and &ldquo;how do I rewrite this specific
+          .ascx&rdquo; — the long view gets crowded out by the close work.
+          So we separate the two jobs into two agents with different
+          mandates and different memories.
+        </Lede>
+      </div>
+      <div className="mt-6 grid grid-cols-1 md:grid-cols-2 gap-4 w-full max-w-7xl">
+        <Panel eyebrow="Orchestrator" accent="accent-2">
+          <div className="space-y-3 text-base md:text-lg leading-snug">
+            <div>
+              <span className="text-xs uppercase tracking-widest font-mono text-[color:var(--fg-soft)] block mb-1">sees</span>
+              the tracker, the rules, what&rsquo;s done, what&rsquo;s blocked
+            </div>
+            <div>
+              <span className="text-xs uppercase tracking-widest font-mono text-[color:var(--fg-soft)] block mb-1">decides</span>
+              what&rsquo;s next · when to stop · when to escalate
+            </div>
+            <div>
+              <span className="text-xs uppercase tracking-widest font-mono text-[color:var(--fg-soft)] block mb-1">never sees</span>
+              the actual component code
+            </div>
+          </div>
+        </Panel>
+        <Panel eyebrow="Executor" accent="accent">
+          <div className="space-y-3 text-base md:text-lg leading-snug">
+            <div>
+              <span className="text-xs uppercase tracking-widest font-mono text-[color:var(--fg-soft)] block mb-1">sees</span>
+              one finding · the file · the conversion notes
+            </div>
+            <div>
+              <span className="text-xs uppercase tracking-widest font-mono text-[color:var(--fg-soft)] block mb-1">decides</span>
+              how to convert this one component, that&rsquo;s all
+            </div>
+            <div>
+              <span className="text-xs uppercase tracking-widest font-mono text-[color:var(--fg-soft)] block mb-1">never sees</span>
+              the other 199 findings or the larger plan
+            </div>
+          </div>
+        </Panel>
+      </div>
+      <FootNote>
+        An Executor is a{" "}
+        <span className="text-[color:var(--fg)] font-semibold">bounded agent</span>
+        {" "}— same idea as a bounded tool, one level up. Fresh context,
+        narrow mandate, returns a result, goes away.
+      </FootNote>
+    </Slide>,
+
+    // 6c. What bounding the agent actually buys you (and the hook into the Interlude)
+    <Slide key="executor-payoff" className="justify-center">
+      <Eyebrow>Why bound the agent</Eyebrow>
+      <div className="mt-3 max-w-6xl">
+        <H2>
+          Same payoff as a bounded tool —{" "}
+          <Accent color="success">one level up</Accent>.
+        </H2>
+      </div>
+      <div className="mt-6 grid grid-cols-2 md:grid-cols-3 gap-3 w-full max-w-7xl">
+        <Panel eyebrow="① context" accent="success" title="stays small">
+          Reliability stays high turn after turn instead of collapsing.
+        </Panel>
+        <Panel eyebrow="② focus" accent="success" title="single mandate">
+          The executor can&rsquo;t wander — there&rsquo;s nothing else in scope.
+        </Panel>
+        <Panel eyebrow="③ runs" accent="success" title="replayable">
+          Same input → comparable result. Debuggable like a unit test.
+        </Panel>
+        <Panel eyebrow="④ failure" accent="success" title="isolated">
+          Executor #47 crashing doesn&rsquo;t poison the run.
+        </Panel>
+        <Panel eyebrow="⑤ work" accent="success" title="parallelizes">
+          No shared memory, no collisions. Ten findings in flight at once.
+        </Panel>
+        <Panel eyebrow="⑥ cost" accent="success" title="bounded per task">
+          200 tasks doesn&rsquo;t cost 200× the per-turn rate.
+        </Panel>
+      </div>
+      <FootNote>
+        And once the orchestrator can{" "}
+        <span className="text-[color:var(--fg)] font-semibold">loop</span>
+        {" "}— fire executor, get result, decide next, repeat — you have a{" "}
+        <Accent color="danger">state problem</Accent>: somebody has to
+        remember what&rsquo;s been done. That&rsquo;s the Interlude.
+      </FootNote>
+    </Slide>,
+
     // 7. Preview — three places the rules quietly stop working
     <Slide key="preview" className="justify-center">
       <Eyebrow>What this talk is</Eyebrow>
