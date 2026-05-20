@@ -80,10 +80,23 @@ This is a boiled-down version of patterns from a real production codebase. The r
 ├── 01-strict-boundary/                            # Demo 1
 ├── 02-lint-catches-lie/                           # Demo 2
 ├── 03-skill-vs-cli/                               # Demo 3
+├── deck/                                          # the slide deck (Next.js)
 ├── .github/
 │   ├── agents/demo-picker-llm.agent.md            # LLM-driven picker
 │   └── skills/demo-picker-cli/SKILL.md            # CLI-wrapping skill
 └── .vscode/                                       # tasks + stage-friendly settings
 ```
+
+## The slide deck
+
+The actual deck for the talk lives in [deck/](deck/) — a small Next.js app with keyboard nav, gradient hero slides, and server-rendered code highlighting. From the workspace root:
+
+```bash
+cd deck
+npm install
+npm run dev
+```
+
+Then press `f` to go fullscreen. See [deck/README.md](deck/README.md) for everything else.
 
 For the underlying research, see [presentation-intelligence-brief.md](presentation-intelligence-brief.md). For per-demo presenter scripts, open the `README.md` in each numbered folder.

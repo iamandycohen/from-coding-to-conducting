@@ -1,0 +1,97 @@
+@import "tailwindcss";
+
+:root {
+  --bg: #0b0d12;
+  --bg-soft: #11141b;
+  --fg: #e6e8ee;
+  --fg-soft: #9aa3b2;
+  --accent: #7dd3fc;
+  --accent-2: #f0abfc;
+  --accent-3: #fde68a;
+  --success: #86efac;
+  --danger: #fda4af;
+  --border: rgba(255,255,255,0.08);
+  --grid: rgba(255,255,255,0.035);
+}
+
+@theme inline {
+  --color-bg: var(--bg);
+  --color-bg-soft: var(--bg-soft);
+  --color-fg: var(--fg);
+  --color-fg-soft: var(--fg-soft);
+  --color-accent: var(--accent);
+  --color-accent-2: var(--accent-2);
+  --color-accent-3: var(--accent-3);
+  --color-success: var(--success);
+  --color-danger: var(--danger);
+  --color-border: var(--border);
+  --font-sans: var(--font-geist-sans);
+  --font-mono: var(--font-geist-mono);
+}
+
+html, body { height: 100%; }
+
+body {
+  background: var(--bg);
+  color: var(--fg);
+  font-family: var(--font-geist-sans), ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+  font-feature-settings: "ss01", "cv11";
+  overflow: hidden;
+  background-image:
+    linear-gradient(var(--grid) 1px, transparent 1px),
+    linear-gradient(90deg, var(--grid) 1px, transparent 1px);
+  background-size: 48px 48px, 48px 48px;
+  background-position: -1px -1px;
+}
+
+::selection {
+  background: var(--accent);
+  color: #0b0d12;
+}
+
+.shiki, .shiki span {
+  font-family: var(--font-geist-mono), ui-monospace, SFMono-Regular, Menlo, monospace;
+  background: transparent !important;
+}
+pre.shiki {
+  padding: 1.25rem 1.5rem;
+  border-radius: 0.75rem;
+  border: 1px solid var(--border);
+  background: rgba(0,0,0,0.35) !important;
+  overflow-x: auto;
+  font-size: 1.05rem;
+  line-height: 1.55;
+}
+
+/* Compact code blocks (used in side-by-side comparisons) */
+.deck-compact-code pre.shiki {
+  font-size: 0.78rem;
+  line-height: 1.55;
+  padding: 1rem 1.15rem;
+  overflow-x: hidden;
+}
+.deck-compact-code pre.shiki code {
+  white-space: pre;
+}
+
+.halo::before {
+  content: "";
+  position: absolute;
+  inset: -20% -10%;
+  z-index: -1;
+  background:
+    radial-gradient(60% 50% at 20% 30%, rgba(125, 211, 252, 0.18), transparent 60%),
+    radial-gradient(50% 50% at 80% 70%, rgba(240, 171, 252, 0.16), transparent 60%),
+    radial-gradient(40% 40% at 50% 100%, rgba(253, 230, 138, 0.10), transparent 60%);
+  filter: blur(40px);
+  animation: drift 16s ease-in-out infinite alternate;
+}
+@keyframes drift {
+  0%   { transform: translate3d(0,0,0) scale(1); }
+  100% { transform: translate3d(2%,-2%,0) scale(1.05); }
+}
+
+.slide-scroll::-webkit-scrollbar { display: none; }
+.slide-scroll { scrollbar-width: none; }
+
+.numeral { font-family: var(--font-geist-mono); font-feature-settings: "tnum", "zero"; }

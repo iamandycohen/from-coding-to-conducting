@@ -21,6 +21,15 @@
       "command": "npm run demo:3:cli",
       "presentation": { "clear": true, "focus": true, "panel": "dedicated" },
       "problemMatcher": []
+    },
+    {
+      "label": "Slide Deck — Start",
+      "type": "shell",
+      "command": "npm run dev",
+      "options": { "cwd": "${workspaceFolder}/deck" },
+      "presentation": { "clear": false, "focus": false, "panel": "dedicated", "reveal": "silent" },
+      "isBackground": true,
+      "problemMatcher": []
     }
   ]
 }
