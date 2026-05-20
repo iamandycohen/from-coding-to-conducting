@@ -1314,7 +1314,7 @@ Use:
           The tool records &ldquo;done.&rdquo;
         </Pull>
       </div>
-      <FootNote>That is what Pattern 02 is.</FootNote>
+      <FootNote>Bookkeeping belongs in code. So does the workflow on top of it — which is the next pattern.</FootNote>
     </Slide>,
 
     // 18. When to leave the agent in charge (decision frame)
@@ -1748,21 +1748,21 @@ A`}
         </div>
         {[
           {
-            eyebrow: "Pattern 01 · the tool",
-            trusted: "the whole sandbox — bash, curl, anything",
+            eyebrow: "Pattern 01 · tools",
+            trusted: "the whole sandbox — bash, curl, anything the agent might need",
             failed: "it invented curl + grep and called the page rendered",
             fixed: "a tool that runs a real browser and returns a verdict",
             color: "var(--accent)",
           },
           {
-            eyebrow: "Pattern 01 · the habit",
-            trusted: "the agent to pick the right tool on its own",
-            failed: "it still reached for curl out of training-set habit",
-            fixed: "the sandbox blocks curl and names the right tool in the error",
+            eyebrow: "Interlude · state",
+            trusted: "the agent to track its own work across 47 turns",
+            failed: "it contradicted itself; the human became the memory",
+            fixed: "a tool that answers \u2018what\u2019s next?\u2019 and records \u2018done\u2019",
             color: "var(--accent-3)",
           },
           {
-            eyebrow: "Pattern 02 · the workflow",
+            eyebrow: "Pattern 02 · workflow",
             trusted: "a prose description of the process in instructions",
             failed: "three runs of the same prompt, three different answers",
             fixed: "the non-negotiable steps live in code, not in prose",
