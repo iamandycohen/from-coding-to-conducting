@@ -1,0 +1,26 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "Demo 1 — Strict Boundary",
+      "type": "shell",
+      "command": "npm run demo:1",
+      "presentation": { "clear": true, "focus": true, "panel": "dedicated" },
+      "problemMatcher": []
+    },
+    {
+      "label": "Demo 2 — Lint Catches the Lie",
+      "type": "shell",
+      "command": "npm run demo:2",
+      "presentation": { "clear": true, "focus": true, "panel": "dedicated" },
+      "problemMatcher": []
+    },
+    {
+      "label": "Demo 3 — CLI Engine",
+      "type": "shell",
+      "command": "npm run demo:3:cli",
+      "presentation": { "clear": true, "focus": true, "panel": "dedicated" },
+      "problemMatcher": []
+    }
+  ]
+}

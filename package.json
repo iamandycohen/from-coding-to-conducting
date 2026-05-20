@@ -1,0 +1,26 @@
+{
+  "name": "sug-2026-demos",
+  "private": true,
+  "type": "module",
+  "version": "0.0.0",
+  "description": "Live demos for SUG Minneapolis talk: From Coding to Conducting.",
+  "engines": {
+    "node": ">=20"
+  },
+  "scripts": {
+    "demo:1": "tsx 01-strict-boundary/run.ts",
+    "demo:2": "tsx 02-lint-catches-lie/run.ts",
+    "demo:3:cli": "tsx 03-skill-vs-cli/run-cli.ts"
+  },
+  "dependencies": {
+    "js-yaml": "^4.1.0",
+    "picocolors": "^1.0.1",
+    "zod": "^3.23.8"
+  },
+  "devDependencies": {
+    "@types/js-yaml": "^4.0.9",
+    "@types/node": "^20.12.7",
+    "tsx": "^4.19.0",
+    "typescript": "^5.5.4"
+  }
+}

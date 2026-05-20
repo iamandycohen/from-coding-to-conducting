@@ -1,0 +1,9 @@
+{
+  "editor.fontSize": 18,
+  "terminal.integrated.fontSize": 18,
+  "editor.minimap.enabled": false,
+  "workbench.colorTheme": "Default Dark+",
+  "editor.renderWhitespace": "none",
+  "editor.wordWrap": "on",
+  "breadcrumbs.enabled": false
+}

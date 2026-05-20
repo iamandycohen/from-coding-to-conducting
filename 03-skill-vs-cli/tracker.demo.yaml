@@ -1,0 +1,21 @@
+findings:
+  - id: A-fix-button-styling
+    status: planned
+    sizing: S
+    blocked: false
+  - id: B-rename-fields
+    status: planned
+    sizing: S
+    blocked: false
+  - id: C-extract-helper
+    status: planned
+    sizing: M
+    blocked: false
+  - id: D-remove-dead-code
+    status: planned
+    sizing: S
+    blocked: true
+  - id: E-doc-cleanup
+    status: shipped
+    sizing: S
+    blocked: false
