@@ -314,18 +314,18 @@ async function validateRender(url, marker) {
 
     // ───── DEMO 1 — Context Rot (bounded tools) ─────
 
-    // 9. Pattern 01 · the job + the rule
+    // 9. Pattern 01 · the situation — the job
     <Slide key="demo1-setup" className="justify-center">
       <Eyebrow>Pattern 01 · the situation</Eyebrow>
       <div className="mt-3 max-w-6xl">
         <H2>
-          The agent had a probe.{" "}
-          <Accent color="danger">It used curl instead.</Accent>
+          Migrate the components.{" "}
+          <Accent color="accent-2">Confirm each one renders.</Accent>
         </H2>
         <Lede>
-          The job: migrate a batch of Sitecore components and confirm each one
-          actually renders in the new app. The rule: never declare a page done
-          until the probe says so.
+          A batch of Sitecore components needs to move into the new app.
+          The bar is simple: don&rsquo;t mark a page done until you&rsquo;ve
+          actually checked it came up.
         </Lede>
       </div>
       <div className="mt-6 grid grid-cols-1 md:grid-cols-2 gap-4 w-full max-w-7xl">
@@ -333,59 +333,61 @@ async function validateRender(url, marker) {
           For each component: convert the markup, deploy it, confirm it
           renders correctly in a browser. Move to the next one.
         </Panel>
-        <Panel eyebrow="the rule" accent="accent-3" title="probe or it didn&rsquo;t happen">
-          Always run{" "}
-          <span className="font-mono">validate-render</span>{" "}
-          before marking a page done. Never declare success on anything
-          you didn&rsquo;t verify with that probe.
+        <Panel eyebrow="the bar" accent="accent-3" title="don&rsquo;t lie about done">
+          Never declare a page complete on something you didn&rsquo;t
+          actually verify. The agent agreed to this in plain English.
         </Panel>
       </div>
       <FootNote>
-        Plain English. The agent agreed to it. The next two slides explain
-        what each of those things is.
+        Reasonable job. Reasonable rule. Now — what did we hand the agent
+        to do it with?
       </FootNote>
     </Slide>,
 
-    // 10. Pattern 01 · what validate-render is
+    // 10. Pattern 01 · what we gave it — the whole sandbox
     <Slide key="demo1-tool" className="justify-center">
-      <Eyebrow>Pattern 01 · the tool we gave it</Eyebrow>
+      <Eyebrow>Pattern 01 · what we gave it</Eyebrow>
       <div className="mt-3 max-w-6xl">
         <H2>
-          <span className="font-mono">validate-render</span>{" "}
-          is a <Accent color="success">real browser check</Accent>.
+          We gave it{" "}
+          <Accent color="danger">the whole sandbox</Accent>.
         </H2>
+        <Lede>
+          Bash. The filesystem. The network. Anything a human dev could
+          run from a terminal, the agent could run too. No bounded probe,
+          no narrow tool — just access.
+        </Lede>
       </div>
       <div className="mt-6 grid grid-cols-1 md:grid-cols-2 gap-4 w-full max-w-7xl">
-        <Panel eyebrow="what it does" accent="success">
-          <ol className="space-y-2 text-base md:text-lg leading-snug list-decimal list-inside marker:text-[color:var(--success)] marker:font-mono">
-            <li>opens the page in a headless browser</li>
-            <li>waits for the component to actually render</li>
-            <li>looks for the expected marker on screen</li>
-            <li>returns a verdict: pass or fail, with a reason</li>
-          </ol>
+        <Panel eyebrow="what we handed over" accent="danger" mono className="!p-5">
+{`bash
+curl   wget   nc
+grep   awk    sed
+cat    ls     find
+node   npm    git
+... anything on $PATH`}
         </Panel>
-        <Panel eyebrow="the shape" accent="success" mono className="!p-5">
-{`validate-render(url, marker)
-
-  → { ok: true,  reason: null }
-  → { ok: false, reason: "..." }`}
+        <Panel eyebrow="why we did it" accent="accent-3" title="maximum freedom">
+          The bet was that more access meant more capability. Give it
+          everything; let it pick the right tool. It would figure out
+          the smart way to verify a page.
         </Panel>
       </div>
       <FootNote>
-        Two fields. Bounded by design. Whatever the page looks like,
-        the agent gets back a sentence, not a haystack.
+        It picked tools, alright. Just not the ones we expected.
       </FootNote>
     </Slide>,
 
-    // 11. Pattern 01 · what the agent did instead
+    // 11. Pattern 01 · what it actually did
     <Slide key="demo1-improv" className="justify-center">
-      <Eyebrow>Pattern 01 · what the agent did instead</Eyebrow>
+      <Eyebrow>Pattern 01 · what it actually did</Eyebrow>
       <div className="mt-3 max-w-6xl">
         <H2>
-          By turn 5, it reached for{" "}
+          By turn 5 it was using{" "}
           <Accent color="danger"><span className="font-mono">curl</span></Accent>{" "}
           and{" "}
-          <Accent color="danger"><span className="font-mono">grep</span></Accent>.
+          <Accent color="danger"><span className="font-mono">grep</span></Accent>{" "}
+          to &ldquo;check&rdquo; the page.
         </H2>
       </div>
       <div className="mt-6 grid grid-cols-1 md:grid-cols-2 gap-4 w-full max-w-7xl">
@@ -400,13 +402,13 @@ async function validateRender(url, marker) {
         </Panel>
       </div>
       <div className="mt-5 w-full max-w-6xl">
-        <Panel eyebrow="the workaround the agent invented" accent="danger" mono className="!p-4">
+        <Panel eyebrow="the workaround it invented" accent="danger" mono className="!p-4">
 {`$ curl https://.../welcome | grep "Welcome"`}
         </Panel>
       </div>
       <FootNote>
-        It looks like a check. It is not the check the rule asked for.
-        The next slide shows why that matters.
+        It looks like a check. It is not. The next slide shows why —
+        and the slide after that shows what it did to the context window.
       </FootNote>
     </Slide>,
 
@@ -462,15 +464,16 @@ $ echo $?
 
     // 9. Demo 1 · run 1 — context decay across turns
     <Slide key="demo2-bad" className="justify-center">
-      <Eyebrow>Pattern 01 · run 1 — one agent, raw tool output</Eyebrow>
+      <Eyebrow>Pattern 01 · run 1 — free sandbox, raw output</Eyebrow>
       <div className="mt-3 max-w-6xl">
         <H2>
-          The instructions don&rsquo;t survive the{" "}
-          <Accent color="danger">tool output</Accent>.
+          Every command lives in the{" "}
+          <Accent color="danger">context window</Accent>.
         </H2>
         <Lede>
-          The agent was told to run a validation probe before claiming success.
-          Then a tool started returning 100K of HTML every turn.
+          curl returns a page. grep returns lines. cat returns a file.
+          Multiply by every turn — and the rules are the first thing
+          that gets summarized away.
         </Lede>
       </div>
       <div className="mt-6 w-full max-w-7xl space-y-3">
@@ -482,7 +485,7 @@ $ echo $?
             { kind: "tool-output", pct: 6 },
             { kind: "free", pct: 56 },
           ]}
-          note='"Running the validation probe before I claim done."'
+          note='"Curling the page to see what comes back."'
         />
         <ContextBar
           turn={3}
@@ -492,7 +495,7 @@ $ echo $?
             { kind: "tool-output", pct: 38 },
             { kind: "free", pct: 26 },
           ]}
-          note='"Probe ran. Checking the result."'
+          note='"More pages. Each one another fetch + grep."'
         />
         <ContextBar
           turn={5}
@@ -522,7 +525,7 @@ $ echo $?
             { kind: "summarized", pct: 16 },
             { kind: "tool-output", pct: 84 },
           ]}
-          note="declares success — no probe was ever run"
+          note="declares success — never opened a real browser"
           noteVariant="danger"
           warn
         />
@@ -532,22 +535,24 @@ $ echo $?
       </div>
       <PillRow className="mt-5">
         <Pill variant="violation">instructions summarized away</Pill>
-        <Pill variant="violation">workflow drifts to curl + grep</Pill>
+        <Pill variant="violation">every command in scrollback</Pill>
         <Pill variant="violation">success declared without proof</Pill>
       </PillRow>
     </Slide>,
 
-    // 14. Demo 2 · the change — bound the tool, save the instructions
+    // 14. Demo 2 · the change — take away the sandbox, give one narrow tool
     <Slide key="demo2-change" className="justify-center">
       <Eyebrow>Pattern 01 · the change</Eyebrow>
       <div className="mt-4 max-w-6xl">
         <H2>
-          Don&rsquo;t bound the agent.{" "}
-          <Accent>Bound the tool.</Accent>
+          Take away the sandbox.{" "}
+          <Accent>Give it one narrow tool.</Accent>
         </H2>
         <Lede>
-          Same probe, different shape. The check runs inside the tool;
-          the agent gets a verdict, not the haystack.
+          No more bash. One bounded probe —{" "}
+          <span className="font-mono">validate-render</span> — that opens a
+          real browser, looks for the marker, and hands back a verdict.
+          Not a payload.
         </Lede>
       </div>
       <div className="mt-5 max-w-6xl w-full">
