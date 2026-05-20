@@ -1635,6 +1635,94 @@ A`}
       </FootNote>
     </Slide>,
 
+    // The through-line — retell the whole talk as one shape
+    <Slide key="through-line" className="justify-center">
+      <Eyebrow>Zoom out</Eyebrow>
+      <div className="mt-3 max-w-6xl">
+        <H2>
+          One story,{" "}
+          <Accent color="accent-2">told three times</Accent>.
+        </H2>
+        <Lede>
+          Every demo you just saw was the same arc — trust the agent too
+          broadly, watch it fail in a specific way, narrow the boundary,
+          watch it get better at the broad work.
+        </Lede>
+      </div>
+      <div className="mt-6 w-full max-w-7xl">
+        <div className="grid grid-cols-12 gap-2 md:gap-3 text-xs md:text-sm uppercase tracking-widest font-mono text-[color:var(--fg-soft)] mb-2 px-1">
+          <div className="col-span-4">what we trusted it with</div>
+          <div className="col-span-4">how it failed</div>
+          <div className="col-span-4">what fixed it</div>
+        </div>
+        {[
+          {
+            eyebrow: "Pattern 01 · the tool",
+            trusted: "the whole sandbox — bash, curl, anything",
+            failed: "it invented curl + grep and called the page rendered",
+            fixed: "a tool that runs a real browser and returns a verdict",
+            color: "var(--accent)",
+          },
+          {
+            eyebrow: "Pattern 01 · the habit",
+            trusted: "the agent to pick the right tool on its own",
+            failed: "it still reached for curl out of training-set habit",
+            fixed: "the sandbox blocks curl and names the right tool in the error",
+            color: "var(--accent-3)",
+          },
+          {
+            eyebrow: "Pattern 02 · the workflow",
+            trusted: "a prose description of the process in instructions",
+            failed: "three runs of the same prompt, three different answers",
+            fixed: "the non-negotiable steps live in code, not in prose",
+            color: "var(--accent-2)",
+          },
+        ].map((row, i) => (
+          <div
+            key={i}
+            className="grid grid-cols-12 gap-2 md:gap-3 items-stretch mt-2"
+          >
+            <div
+              className="col-span-12 -mb-1 text-[10px] md:text-xs uppercase tracking-widest font-mono px-1"
+              style={{ color: row.color }}
+            >
+              {row.eyebrow}
+            </div>
+            <div
+              className="col-span-4 rounded-xl border bg-[color:var(--bg-soft)]/60 p-3 md:p-4 text-sm md:text-base leading-snug"
+              style={{
+                borderColor: `color-mix(in srgb, ${row.color} 35%, transparent)`,
+              }}
+            >
+              {row.trusted}
+            </div>
+            <div
+              className="col-span-4 rounded-xl border bg-[color:var(--bg-soft)]/60 p-3 md:p-4 text-sm md:text-base leading-snug"
+              style={{
+                borderColor: `color-mix(in srgb, var(--danger) 35%, transparent)`,
+                background: `color-mix(in srgb, var(--danger) 6%, var(--bg-soft))`,
+              }}
+            >
+              {row.failed}
+            </div>
+            <div
+              className="col-span-4 rounded-xl border bg-[color:var(--bg-soft)]/60 p-3 md:p-4 text-sm md:text-base leading-snug"
+              style={{
+                borderColor: `color-mix(in srgb, var(--success) 40%, transparent)`,
+                background: `color-mix(in srgb, var(--success) 6%, var(--bg-soft))`,
+              }}
+            >
+              {row.fixed}
+            </div>
+          </div>
+        ))}
+      </div>
+      <FootNote>
+        Every time we narrowed the agent&rsquo;s reach, the agent got better
+        at the broad work. That&rsquo;s the whole talk.
+      </FootNote>
+    </Slide>,
+
     // 18. Closer
     <Slide key="closer" hero className="justify-center">
       <Eyebrow>The closer</Eyebrow>
