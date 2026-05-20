@@ -910,37 +910,51 @@ E · done    · S · blocked: false`}
       <FootNote>A and B are a real tie. The engine must break it the same way every time.</FootNote>
     </Slide>,
 
-    // 19. Demo 3 · run 1 — LLM engine drifts
-    <Slide key="demo3-bad" className="justify-center">
+    // 19a. Demo 3 · run 1 — the experiment
+    <Slide key="demo3-bad-setup" className="justify-center">
       <Eyebrow>Pattern 02 · run 1 — English → LLM</Eyebrow>
       <div className="mt-4 max-w-6xl">
         <H2>
-          Three asks. <Accent color="danger">Three answers.</Accent>
+          Same question.{" "}
+          <Accent color="danger">Three times.</Accent>
         </H2>
         <Lede>
-          The rules are clear. The agent reads them in English every time. It
-          still has to invent a tiebreaker.
+          Same tracker. Same rules in plain English. The agent reads them fresh
+          on each turn and has to pick the next finding itself.
         </Lede>
       </div>
+      <div className="mt-8 w-full max-w-4xl">
+        <Panel eyebrow="the prompt (run 1, 2, and 3)" accent="danger" mono className="!p-6 text-center">
+{`> what's next?`}
+        </Panel>
+      </div>
+      <FootNote>
+        There is one correct tiebreaker: A — first in the file. Three runs,
+        three answers on the next slide.
+      </FootNote>
+    </Slide>,
+
+    // 19b. Demo 3 · run 1 — the three answers
+    <Slide key="demo3-bad" className="justify-center">
+      <Eyebrow>Pattern 02 · run 1 — three answers</Eyebrow>
+      <div className="mt-3 max-w-6xl">
+        <H2>
+          Three runs.{" "}
+          <Accent color="danger">Three different answers.</Accent>
+        </H2>
+      </div>
       <div className="mt-6 grid grid-cols-1 md:grid-cols-3 gap-4 w-full max-w-7xl">
-        <Panel eyebrow="run 1" accent="danger" mono>
-{`> what's next?
-
-A — earliest small,
-unblocked, planned.`}
+        <Panel eyebrow="run 1" accent="danger" title="A" mono className="!p-5">
+{`"earliest small,
+ unblocked, planned."`}
         </Panel>
-        <Panel eyebrow="run 2" accent="danger" mono>
-{`> what's next?
-
-B — also S, also planned;
-A and B are equivalent,
-choosing B.`}
+        <Panel eyebrow="run 2" accent="danger" title="B" mono className="!p-5">
+{`"A and B are equivalent —
+ choosing B."`}
         </Panel>
-        <Panel eyebrow="run 3" accent="danger" mono>
-{`> what's next?
-
-A or B — both qualify,
-defer to author.`}
+        <Panel eyebrow="run 3" accent="danger" title="A or B" mono className="!p-5">
+{`"both qualify —
+ defer to author."`}
         </Panel>
       </div>
       <PillRow className="mt-6">
