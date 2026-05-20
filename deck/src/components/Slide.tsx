@@ -497,3 +497,100 @@ export function DocChip({
     </div>
   );
 }
+
+// ─────────────────────────────────────────────────────────────
+// Context decay primitives — visualize what happens to a
+// system prompt as tool output dominates context across turns.
+// ─────────────────────────────────────────────────────────────
+
+export type ContextSegmentKind =
+  | "instructions"
+  | "conversation"
+  | "tool-output"
+  | "summarized"
+  | "free";
+
+const CTX_COLOR: Record<ContextSegmentKind, string> = {
+  instructions: "bg-[color:var(--accent)]",
+  conversation: "bg-[color:var(--accent-2)]",
+  "tool-output": "bg-[color:var(--accent-3)]",
+  summarized:
+    "bg-[repeating-linear-gradient(45deg,_var(--fg-soft)_0,_var(--fg-soft)_4px,_transparent_4px,_transparent_8px)] opacity-50",
+  free: "bg-[color:var(--bg-soft)]/40",
+};
+
+const CTX_LABEL: Record<ContextSegmentKind, string> = {
+  instructions: "instructions",
+  conversation: "conversation",
+  "tool-output": "tool output",
+  summarized: "[summarized]",
+  free: "free",
+};
+
+export function ContextBar({
+  turn,
+  segments,
+  note,
+  noteVariant = "neutral",
+  warn = false,
+}: {
+  turn: number;
+  segments: { kind: ContextSegmentKind; pct: number }[];
+  note?: string;
+  noteVariant?: "neutral" | "danger" | "success" | "dim";
+  warn?: boolean;
+}) {
+  const noteColor =
+    noteVariant === "danger"
+      ? "text-[color:var(--danger)]"
+      : noteVariant === "success"
+        ? "text-[color:var(--success)]"
+        : noteVariant === "dim"
+          ? "text-[color:var(--fg-soft)]/60"
+          : "text-[color:var(--fg)]";
+  return (
+    <div className="grid grid-cols-[5rem_1fr_22rem] items-center gap-4">
+      <div className="font-mono text-xs md:text-sm uppercase tracking-widest text-[color:var(--fg-soft)]">
+        turn {turn}
+      </div>
+      <div className="h-6 md:h-7 rounded-md border border-[color:var(--border)] overflow-hidden flex">
+        {segments.map((s, i) => (
+          <div
+            key={i}
+            className={`${CTX_COLOR[s.kind]} h-full`}
+            style={{ width: `${s.pct}%` }}
+            title={CTX_LABEL[s.kind]}
+          />
+        ))}
+      </div>
+      <div
+        className={`text-sm md:text-base font-mono leading-snug ${noteColor}`}
+      >
+        {warn && <span className="text-[color:var(--danger)] mr-2">⚠</span>}
+        {note}
+      </div>
+    </div>
+  );
+}
+
+export function ContextLegend() {
+  const items: { kind: ContextSegmentKind; label: string }[] = [
+    { kind: "instructions", label: "instructions" },
+    { kind: "conversation", label: "conversation" },
+    { kind: "tool-output", label: "tool output" },
+    { kind: "summarized", label: "[summarized]" },
+    { kind: "free", label: "free" },
+  ];
+  return (
+    <div className="flex flex-wrap gap-4 text-sm text-[color:var(--fg-soft)]">
+      {items.map((i) => (
+        <div key={i.kind} className="flex items-center gap-2">
+          <span
+            className={`inline-block w-4 h-4 rounded-sm border border-[color:var(--border)] ${CTX_COLOR[i.kind]}`}
+          />
+          <span className="font-mono">{i.label}</span>
+        </div>
+      ))}
+    </div>
+  );
+}
