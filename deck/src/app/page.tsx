@@ -970,20 +970,155 @@ node   npm    git
       </PillRow>
     </Slide>,
 
+    // ───── PATTERN 01 · evolution — what actually had to happen ─────
+
+    // Evo · step 1 — even with the tool, old habits won
+    <Slide key="evo1-habit" className="justify-center">
+      <Eyebrow>Pattern 01 · evolution · step 1</Eyebrow>
+      <div className="mt-3 max-w-6xl">
+        <H2>
+          Even with{" "}
+          <span className="font-mono">validate-render</span> on the table,{" "}
+          <Accent color="danger">it still reached for curl</Accent>.
+        </H2>
+        <Lede>
+          Some turns it used the probe. Other turns it would say something
+          reasonable-sounding and reach right back for bash.
+        </Lede>
+      </div>
+      <div className="mt-6 w-full max-w-5xl">
+        <Panel eyebrow="agent reasoning, real turn" accent="danger" className="!p-6">
+          <div className="space-y-3 text-base md:text-lg leading-snug">
+            <div className="italic">
+              &ldquo;Let me just curl the page first to double-check the
+              response, then I&rsquo;ll run validate-render.&rdquo;
+            </div>
+            <div className="font-mono text-sm text-[color:var(--fg-soft)]">
+              $ curl -s https://staging.../welcome | head -50
+            </div>
+            <div className="text-sm text-[color:var(--fg-soft)]">
+              The probe never ran. The agent saw markup, decided things looked
+              fine, moved on.
+            </div>
+          </div>
+        </Panel>
+      </div>
+      <FootNote>
+        Adding a better tool doesn&rsquo;t retrain the habit. The model has a
+        decade of bash in its training. validate-render is a week old.
+      </FootNote>
+    </Slide>,
+
+    // Evo · step 2 — block the alternative, but blocking isn't teaching
+    <Slide key="evo2-block" className="justify-center">
+      <Eyebrow>Pattern 01 · evolution · step 2</Eyebrow>
+      <div className="mt-3 max-w-6xl">
+        <H2>
+          So we{" "}
+          <Accent color="danger">blocked curl at the sandbox</Accent>.
+        </H2>
+        <Lede>
+          sandbox-exec was already mediating every shell command. We added a
+          deny-list: curl, wget, nc — anything that fetches a URL.
+        </Lede>
+      </div>
+      <div className="mt-6 grid grid-cols-1 md:grid-cols-2 gap-4 w-full max-w-7xl">
+        <Panel eyebrow="what the agent saw" accent="danger" mono className="!p-5">
+{`$ curl -s https://staging.../welcome
+
+sandbox-exec: command 'curl' is not
+permitted in this environment.`}
+        </Panel>
+        <Panel eyebrow="what the agent did next" accent="accent-3">
+          <div className="space-y-2 text-base md:text-lg leading-snug">
+            <div className="italic">
+              &ldquo;curl is blocked. Let me try{" "}
+              <span className="font-mono">wget</span>.&rdquo;
+            </div>
+            <div className="italic">
+              &ldquo;Also blocked. Maybe{" "}
+              <span className="font-mono">nc</span>?&rdquo;
+            </div>
+            <div className="text-sm text-[color:var(--fg-soft)] pt-1">
+              Eventually: &ldquo;The fetch tools are all blocked here. I&rsquo;ll
+              skip verification and continue.&rdquo;
+            </div>
+          </div>
+        </Panel>
+      </div>
+      <FootNote>
+        Blocking told the agent &ldquo;no&rdquo;. It didn&rsquo;t tell it what
+        to do instead.
+      </FootNote>
+    </Slide>,
+
+    // Evo · step 3 — the rejection itself teaches
+    <Slide key="evo3-teach" className="justify-center">
+      <Eyebrow>Pattern 01 · evolution · step 3</Eyebrow>
+      <div className="mt-3 max-w-6xl">
+        <H2>
+          Make the{" "}
+          <Accent color="success">rejection teach</Accent>.
+        </H2>
+        <Lede>
+          When sandbox-exec sees a blocked verb, it doesn&rsquo;t just deny.
+          It names the right tool for the job it thinks you&rsquo;re trying
+          to do.
+        </Lede>
+      </div>
+      <div className="mt-6 grid grid-cols-1 md:grid-cols-2 gap-4 w-full max-w-7xl">
+        <Panel eyebrow="the new rejection" accent="success" mono className="!p-5">
+{`$ curl -s https://staging.../welcome
+
+sandbox-exec: curl is blocked here.
+
+It looks like you're trying to
+verify that a page renders.
+
+Use:
+  validate-render(url, marker)
+    → runs a real browser
+    → returns {ok, reason}`}
+        </Panel>
+        <Panel eyebrow="what the agent did next" accent="success">
+          <div className="space-y-3 text-base md:text-lg leading-snug">
+            <div className="italic">
+              &ldquo;Right — using validate-render.&rdquo;
+            </div>
+            <div className="font-mono text-sm">
+              validate-render(&quot;/welcome&quot;, &quot;Welcome&quot;)
+            </div>
+            <div className="text-sm text-[color:var(--fg-soft)] pt-1">
+              The error message became part of the tool. The denial is now
+              a tiny tutorial.
+            </div>
+          </div>
+        </Panel>
+      </div>
+      <FootNote>
+        Three iterations. Build the tool. Block the wrong one. Teach in the
+        moment of failure.
+      </FootNote>
+    </Slide>,
+
     // Lesson 01
     <Slide key="lesson2" hero className="justify-center">
       <Eyebrow>Lesson 01</Eyebrow>
       <div className="mt-6">
         <Pull>
-          Context is a budget,{" "}
-          <Accent color="danger">not a bucket</Accent>. Conducting is also
-          deciding{" "}
-          <Accent color="success">what each agent gets to see</Accent>.
+          Building the tool{" "}
+          <Accent color="danger">wasn&rsquo;t enough</Accent>.
+          <br />
+          Blocking the alternative{" "}
+          <Accent color="danger">wasn&rsquo;t enough</Accent>.
+          <br />
+          The system had to{" "}
+          <Accent color="success">teach at the moment of failure</Accent>.
         </Pull>
       </div>
       <FootNote>
-        Sub-agents aren&rsquo;t for parallelism. They&rsquo;re for context
-        hygiene.
+        A bounded tool is necessary. The system that shepherds the agent
+        toward it is what makes it stick.
       </FootNote>
     </Slide>,
 
