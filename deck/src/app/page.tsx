@@ -24,23 +24,6 @@ import {
 import { highlight } from "@/lib/highlight";
 
 export default async function Page() {
-  const conductedDiff = await highlight(
-    `// Replace one agent with three small roles + a checker.
-
-const byCategory = orchestrate(commits);
-//   classify each commit, drop internal types
-
-const items = USER_FACING_CATEGORIES.flatMap(cat =>
-  executeCategory(cat, byCategory.get(cat) ?? []),
-);
-//   per category: dedupe by scope, fit to ${"\u2264"} 80 chars
-
-const result = check(items);
-if (!result.ok) throw new Error(result.violations.join("\\n"));
-//   non-negotiable contract — same checker runs on both attempts`,
-    "typescript",
-  );
-
   const boundedToolDiff = await highlight(
     `// Before: the tool returns whatever the page returns.
 //          A 100K HTML dump enters the agent's context every turn.
@@ -158,7 +141,7 @@ async function validateRender(url, marker) {
           <Accent color="accent-2">change the work</Accent>,
           <br />
           but not reliable enough to leave{" "}
-          <Accent color="danger">unscaffolded</Accent>.
+          <Accent color="danger">on their own</Accent>.
         </Pull>
       </div>
       <FootNote>The job moved up a layer. Then it got harder.</FootNote>
@@ -280,189 +263,206 @@ async function validateRender(url, marker) {
       </ProofStrip>
     </Slide>,
 
-    // ───── DEMO 1 — Release Notes (decomposition) ─────
-
-    // 7. Demo 1 · setup — the task and the constraints
-    <Slide key="demo1-setup" className="justify-center">
-      <Eyebrow>Demo 01 · setup</Eyebrow>
-      <div className="mt-4 max-w-6xl">
+    // 7. Preview — three places the rules quietly stop working
+    <Slide key="preview" className="justify-center">
+      <Eyebrow>What this talk is</Eyebrow>
+      <div className="mt-3 max-w-6xl">
         <H2>
-          Twenty commits in. <Accent>Release notes out.</Accent>
+          Three places the rules quietly{" "}
+          <Accent color="danger">stop working</Accent>.
         </H2>
         <Lede>
-          Engineering wants a clean changelog from a sprint of commits. We tried
-          one agent first.
+          The agent has instructions. The agent has tools. Most days that&rsquo;s
+          enough. Some days it isn&rsquo;t — and the failure mode looks the same
+          every time.
         </Lede>
       </div>
-      <div className="mt-8 grid grid-cols-1 md:grid-cols-2 gap-6 w-full max-w-7xl">
-        <Panel eyebrow="the input" mono>
-{`feat(auth):     add OAuth login with Google
-feat(auth):     support Google sign-in on marketing site
-fix(billing):   stop charging cancelled subs on the day of …
-fix(billing):   correct tax calculation for EU customers
-chore(ci):      bump CI runner to ubuntu-24.04
-perf(search):   cache search results for 60s
-… 11 more`}
-        </Panel>
-        <Panel eyebrow="the constraints" accent="accent-3">
-          <ul className="space-y-3 text-lg md:text-xl text-[color:var(--fg)]">
-            <li>— at most <Accent color="accent-3">8 items</Accent></li>
-            <li>— each item <Accent color="accent-3">≤ 80 chars</Accent></li>
-            <li>— grouped as <Accent color="accent-3">Features / Fixes / Performance</Accent></li>
-            <li>— no internal noise (chore / test / docs / refactor)</li>
-          </ul>
-        </Panel>
-      </div>
-    </Slide>,
-
-    // 8. Demo 1 · run 1 — solo agent (the bad output)
-    <Slide key="demo1-bad" className="justify-center">
-      <Eyebrow>Demo 01 · run 1 — one agent, free-running</Eyebrow>
-      <div className="mt-3 max-w-6xl">
-        <H2>
-          The agent did its job <Accent color="danger">and ours too</Accent>.
-        </H2>
-      </div>
-      <div className="mt-5 w-full max-w-7xl">
-        <Panel eyebrow="agent output" accent="danger" mono className="!p-5">
-{`## Features              · 4 items
-- add OAuth login with Google
-- support Google sign-in on the marketing site     ← duplicate
-
-## Fixes                 · 5 items
-- stop charging cancelled subs on the day of cancellation in some tz   ← 82 chars
-
-## Performance · Maintenance · Improvements · Quality · Documentation
-                                                  ← 4 invented categories
-
-— 17 items total. Cap is 8.`}
-        </Panel>
-        <PillRow className="mt-5">
-          <Pill variant="violation">17 items (max 8)</Pill>
-          <Pill variant="violation">4 invented categories</Pill>
-          <Pill variant="violation">duplicate-ish items</Pill>
-          <Pill variant="violation">one item over 80 chars</Pill>
-        </PillRow>
-      </div>
-    </Slide>,
-
-    // 9. Demo 1 · the change — split into roles
-    <Slide key="demo1-change" className="justify-center">
-      <Eyebrow>Demo 01 · the change</Eyebrow>
-      <div className="mt-4 max-w-6xl">
-        <H2>
-          Split into <Accent>three small roles</Accent> plus a checker.
-        </H2>
-      </div>
       <div className="mt-6 grid grid-cols-1 md:grid-cols-3 gap-4 w-full max-w-7xl">
-        <Panel eyebrow="orchestrator" accent="accent-2" title="decides">
-          Classify each commit. Drop internal types. Never sees the prose.
+        <Panel eyebrow="① the tool floods the context" accent="danger" title="Pattern 01">
+          A tool returns a big payload every turn. The agent&rsquo;s
+          instructions get summarized away. It starts improvising.
         </Panel>
-        <Panel eyebrow="executor" accent="accent" title="does">
-          Per category: dedupe by scope, fit each item to width. One narrow job.
+        <Panel eyebrow="② the bookkeeping lives in the agent" accent="danger" title="Interlude">
+          The agent is asked to track its own work across turns. It
+          contradicts itself, forgets decisions, and the human becomes the
+          memory.
         </Panel>
-        <Panel eyebrow="checker" accent="success" title="enforces">
-          Counts items, lengths, categories, duplicates. Throws on any miss.
+        <Panel eyebrow="③ the workflow lives in prose" accent="danger" title="Pattern 02">
+          The rules are written in English. The agent reinterprets them on
+          every run. Same input → different answers.
         </Panel>
-      </div>
-      <div className="mt-6 max-w-6xl w-full">
-        <div
-          className="slide-scroll"
-          dangerouslySetInnerHTML={{ __html: conductedDiff }}
-        />
-      </div>
-    </Slide>,
-
-    // 10. Demo 1 · run 2 — conducted (the good output)
-    <Slide key="demo1-good" className="justify-center">
-      <Eyebrow>Demo 01 · run 2 — conducted</Eyebrow>
-      <div className="mt-3 max-w-6xl">
-        <H2>
-          Same commits. <Accent color="success">Through the pipeline.</Accent>
-        </H2>
-      </div>
-      <div className="mt-5 w-full max-w-7xl">
-        <Panel eyebrow="agent output" accent="success" mono className="!p-5">
-{`## Features
-- add OAuth login with Google
-- add filters by date range and status
-- add Slack integration
-
-## Fixes
-- stop charging cancelled subscriptions on the day of cancellation in s…
-- dark mode toggle now persists across sessions
-- fix off-by-one in pagination
-
-## Performance
-- cache search results for 60s
-- lazy-load chart components`}
-        </Panel>
-        <PillRow className="mt-5">
-          <Pill variant="check">8 items, max 8</Pill>
-          <Pill variant="check">all ≤ 80 chars</Pill>
-          <Pill variant="check">user-facing only</Pill>
-          <Pill variant="check">no duplicates</Pill>
-        </PillRow>
-      </div>
-    </Slide>,
-
-    // 11. Lesson 1
-    <Slide key="lesson1" hero className="justify-center">
-      <Eyebrow>Lesson 01</Eyebrow>
-      <div className="mt-6">
-        <Pull>
-          One agent guesses. Roles plus a checker{" "}
-          <Accent color="success">compose</Accent>.
-        </Pull>
       </div>
       <FootNote>
-        Conducting is deciding where the boundary goes — and putting the
-        non-negotiable parts in code.
+        Same shape of fix for all three: take the thing the LLM keeps getting
+        wrong, and put it somewhere that can&rsquo;t drift.
       </FootNote>
     </Slide>,
 
-    // ───── DEMO 2 — Context Rot (sub-agents) ─────
+    // ───── PATTERN 01 — Bounded tools ─────
 
-    // 12. Demo 2 · setup — the rules and the offending tool
-    <Slide key="demo2-setup" className="justify-center">
-      <Eyebrow>Demo 02 · setup</Eyebrow>
-      <div className="mt-4 max-w-6xl">
+    // 8. Pattern 01 · title card
+    <Slide key="pattern1-title" hero className="justify-center">
+      <Eyebrow>Pattern 01</Eyebrow>
+      <div className="mt-4">
+        <Pull>
+          When tools <Accent color="danger">flood the context</Accent>,
+          <br />the rules don&rsquo;t survive.
+        </Pull>
+      </div>
+      <FootNote>A bounded tool is one that returns a verdict, not a payload.</FootNote>
+    </Slide>,
+
+    // ───── DEMO 1 — Context Rot (bounded tools) ─────
+
+    // 9. Pattern 01 · the job + the rule
+    <Slide key="demo1-setup" className="justify-center">
+      <Eyebrow>Pattern 01 · the situation</Eyebrow>
+      <div className="mt-3 max-w-6xl">
         <H2>
-          The agent was given <Accent>two rules</Accent>. And one tool that
-          quietly buries them.
+          The agent had a probe.{" "}
+          <Accent color="danger">It used curl instead.</Accent>
+        </H2>
+        <Lede>
+          The job: migrate a batch of Sitecore components and confirm each one
+          actually renders in the new app. The rule: never declare a page done
+          until the probe says so.
+        </Lede>
+      </div>
+      <div className="mt-6 grid grid-cols-1 md:grid-cols-2 gap-4 w-full max-w-7xl">
+        <Panel eyebrow="the job" accent="accent-2" title="migrate + verify">
+          For each component: convert the markup, deploy it, confirm it
+          renders correctly in a browser. Move to the next one.
+        </Panel>
+        <Panel eyebrow="the rule" accent="accent-3" title="probe or it didn&rsquo;t happen">
+          Always run{" "}
+          <span className="font-mono">validate-render</span>{" "}
+          before marking a page done. Never declare success on anything
+          you didn&rsquo;t verify with that probe.
+        </Panel>
+      </div>
+      <FootNote>
+        Plain English. The agent agreed to it. The next two slides explain
+        what each of those things is.
+      </FootNote>
+    </Slide>,
+
+    // 10. Pattern 01 · what validate-render is
+    <Slide key="demo1-tool" className="justify-center">
+      <Eyebrow>Pattern 01 · the tool we gave it</Eyebrow>
+      <div className="mt-3 max-w-6xl">
+        <H2>
+          <span className="font-mono">validate-render</span>{" "}
+          is a <Accent color="success">real browser check</Accent>.
         </H2>
       </div>
       <div className="mt-6 grid grid-cols-1 md:grid-cols-2 gap-4 w-full max-w-7xl">
-        <Panel eyebrow="the rules the agent was given" accent="accent-3">
-          <ul className="space-y-2 text-base md:text-lg leading-snug">
-            <li>
-              <span className="text-[color:var(--accent)] font-semibold">1.</span>{" "}
-              Always run <span className="font-mono">validate-render</span> before declaring a page done.
-            </li>
-            <li>
-              <span className="text-[color:var(--accent)] font-semibold">2.</span>{" "}
-              Never declare success on tool output you didn&rsquo;t verify with a probe.
-            </li>
-          </ul>
+        <Panel eyebrow="what it does" accent="success">
+          <ol className="space-y-2 text-base md:text-lg leading-snug list-decimal list-inside marker:text-[color:var(--success)] marker:font-mono">
+            <li>opens the page in a headless browser</li>
+            <li>waits for the component to actually render</li>
+            <li>looks for the expected marker on screen</li>
+            <li>returns a verdict: pass or fail, with a reason</li>
+          </ol>
         </Panel>
-        <Panel eyebrow="the tool the agent was given" accent="danger">
-          <div className="font-mono text-sm md:text-base">
-            <span className="text-[color:var(--accent-3)]">render-page</span>(url) → string
-          </div>
-          <div className="mt-2 text-base md:text-lg text-[color:var(--fg-soft)] leading-snug">
-            Returns the raw HTML of the rendered page.{" "}
-            <span className="text-[color:var(--danger)]">~100K characters</span>{" "}
-            on a real component. Every turn the agent calls it, the whole
-            page lands in context.
-          </div>
+        <Panel eyebrow="the shape" accent="success" mono className="!p-5">
+{`validate-render(url, marker)
+
+  → { ok: true,  reason: null }
+  → { ok: false, reason: "..." }`}
         </Panel>
       </div>
-      <FootNote>The rules are correct. The tool shape is the problem.</FootNote>
+      <FootNote>
+        Two fields. Bounded by design. Whatever the page looks like,
+        the agent gets back a sentence, not a haystack.
+      </FootNote>
     </Slide>,
 
-    // 13. Demo 2 · run 1 — context decay across turns
+    // 11. Pattern 01 · what the agent did instead
+    <Slide key="demo1-improv" className="justify-center">
+      <Eyebrow>Pattern 01 · what the agent did instead</Eyebrow>
+      <div className="mt-3 max-w-6xl">
+        <H2>
+          By turn 5, it reached for{" "}
+          <Accent color="danger"><span className="font-mono">curl</span></Accent>{" "}
+          and{" "}
+          <Accent color="danger"><span className="font-mono">grep</span></Accent>.
+        </H2>
+      </div>
+      <div className="mt-6 grid grid-cols-1 md:grid-cols-2 gap-4 w-full max-w-7xl">
+        <Panel eyebrow="what curl is" accent="accent-3" title="a downloader">
+          A command-line tool that fetches whatever a URL returns and prints
+          it. No browser, no rendering — just the raw text that came back
+          from the server.
+        </Panel>
+        <Panel eyebrow="what grep is" accent="accent-3" title="a text searcher">
+          A command-line tool that searches for a string inside text. If the
+          string is there, it prints the line. If not, it prints nothing.
+        </Panel>
+      </div>
+      <div className="mt-5 w-full max-w-6xl">
+        <Panel eyebrow="the workaround the agent invented" accent="danger" mono className="!p-4">
+{`$ curl https://.../welcome | grep "Welcome"`}
+        </Panel>
+      </div>
+      <FootNote>
+        It looks like a check. It is not the check the rule asked for.
+        The next slide shows why that matters.
+      </FootNote>
+    </Slide>,
+
+    // 8. Demo 1 · why it matters — same page, two probes, different answers
+    <Slide key="demo1-probes" className="justify-center">
+      <Eyebrow>Pattern 01 · why the difference matters</Eyebrow>
+      <div className="mt-3 max-w-6xl">
+        <H2>
+          Same page. Two probes.{" "}
+          <Accent color="danger">Opposite answers.</Accent>
+        </H2>
+        <Lede>
+          The hero component renders the word &ldquo;Welcome&rdquo; into the
+          HTML, then a CSS rule pushes it off-screen. The text is in the
+          document. Nobody can see it.
+        </Lede>
+      </div>
+
+      <div className="mt-5 grid grid-cols-1 md:grid-cols-2 gap-4 w-full max-w-7xl">
+        <Panel eyebrow="what the agent ran" accent="danger" title="curl + grep" mono className="!p-5">
+{`$ curl -s https://staging.acme.com/welcome \\
+    | grep -c "Welcome"
+
+1
+
+$ echo $?
+0
+
+# ✓ "found it — ship it"`}
+        </Panel>
+
+        <Panel eyebrow="what the probe would have said" accent="success" title="validate-render" mono className="!p-5">
+{`validate-render("/welcome", "Welcome")
+
+{
+  marker:   "found",
+  rendered: false,
+  reason:   "element off-screen
+            (left: -9999px)",
+  screenshot: "hero-broken.png"
+}
+
+# ✗ blocked — needs a fix`}
+        </Panel>
+      </div>
+
+      <div className="mt-5 max-w-6xl text-base md:text-lg text-[color:var(--fg-soft)] text-center">
+        <span className="text-[color:var(--fg)]">What the user actually sees:</span>{" "}
+        a blank space where the hero should be.{" "}
+        <span className="italic">curl can&rsquo;t open a browser. grep can&rsquo;t see a screen.</span>
+      </div>
+    </Slide>,
+
+    // 9. Demo 1 · run 1 — context decay across turns
     <Slide key="demo2-bad" className="justify-center">
-      <Eyebrow>Demo 02 · run 1 — one agent, raw tool output</Eyebrow>
+      <Eyebrow>Pattern 01 · run 1 — one agent, raw tool output</Eyebrow>
       <div className="mt-3 max-w-6xl">
         <H2>
           The instructions don&rsquo;t survive the{" "}
@@ -539,7 +539,7 @@ perf(search):   cache search results for 60s
 
     // 14. Demo 2 · the change — bound the tool, save the instructions
     <Slide key="demo2-change" className="justify-center">
-      <Eyebrow>Demo 02 · the change</Eyebrow>
+      <Eyebrow>Pattern 01 · the change</Eyebrow>
       <div className="mt-4 max-w-6xl">
         <H2>
           Don&rsquo;t bound the agent.{" "}
@@ -565,7 +565,7 @@ perf(search):   cache search results for 60s
 
     // 15. Demo 2 · run 2 — bounded tool, instructions intact
     <Slide key="demo2-good" className="justify-center">
-      <Eyebrow>Demo 02 · run 2 — bounded tool, instructions intact</Eyebrow>
+      <Eyebrow>Pattern 01 · run 2 — bounded tool, instructions intact</Eyebrow>
       <div className="mt-3 max-w-6xl">
         <H2>
           Same agent. Same rules.{" "}
@@ -635,9 +635,9 @@ perf(search):   cache search results for 60s
       </PillRow>
     </Slide>,
 
-    // 16. Lesson 2
+    // Lesson 01
     <Slide key="lesson2" hero className="justify-center">
-      <Eyebrow>Lesson 02</Eyebrow>
+      <Eyebrow>Lesson 01</Eyebrow>
       <div className="mt-6">
         <Pull>
           Context is a budget,{" "}
@@ -650,6 +650,32 @@ perf(search):   cache search results for 60s
         Sub-agents aren&rsquo;t for parallelism. They&rsquo;re for context
         hygiene.
       </FootNote>
+    </Slide>,
+
+    // Bridge — from tools to something bigger
+    <Slide key="bridge-tools-to-workflow" className="justify-center">
+      <Eyebrow>Bridge</Eyebrow>
+      <div className="mt-3 max-w-6xl">
+        <H2>
+          Tools are{" "}
+          <Accent>one place</Accent>{" "}
+          workflow leaks out of the agent.
+          <br />
+          There&rsquo;s a{" "}
+          <Accent color="danger">bigger one</Accent>.
+        </H2>
+      </div>
+      <div className="mt-8 max-w-5xl text-lg md:text-xl leading-relaxed text-[color:var(--fg-soft)]">
+        Pattern 01 was about <span className="text-[color:var(--fg)]">what the agent receives</span>
+         — the tool returns a payload, the rules get pushed out, the agent
+        improvises.
+      </div>
+      <div className="mt-4 max-w-5xl text-lg md:text-xl leading-relaxed text-[color:var(--fg-soft)]">
+        The next pattern is about <span className="text-[color:var(--fg)]">what the agent has to remember</span>
+         — the rules, the state, the bookkeeping. When that lives in the
+        agent&rsquo;s head, it goes wrong in ways the audience here will
+        recognize immediately.
+      </div>
     </Slide>,
 
     // ───── INTERLUDE — Why workflow-inside-the-agent is the wrong pattern ─────
@@ -783,7 +809,7 @@ perf(search):   cache search results for 60s
           &ldquo;what&rsquo;s next?&rdquo;. The tool records &ldquo;done.&rdquo;
         </Pull>
       </div>
-      <FootNote>That is what Demo 3 is.</FootNote>
+      <FootNote>That is what Pattern 02 is.</FootNote>
     </Slide>,
 
     // 18. When to leave the agent in charge (decision frame)
@@ -825,11 +851,28 @@ perf(search):   cache search results for 60s
       </div>
     </Slide>,
 
+    // ───── PATTERN 02 — Workflow in prose vs code ─────
+
+    // Pattern 02 · title card
+    <Slide key="pattern2-title" hero className="justify-center">
+      <Eyebrow>Pattern 02</Eyebrow>
+      <div className="mt-4">
+        <Pull>
+          Don&rsquo;t <Accent color="danger">describe</Accent> the workflow.
+          <br />
+          <Accent color="success">Encode</Accent> it.
+        </Pull>
+      </div>
+      <FootNote>
+        Prose gets reinterpreted on every run. Code can&rsquo;t.
+      </FootNote>
+    </Slide>,
+
     // ───── DEMO 3 — Skill vs CLI (determinism) ─────
 
     // 18. Demo 3 · setup — same rules, two engines
     <Slide key="demo3-setup" className="justify-center">
-      <Eyebrow>Demo 03 · setup</Eyebrow>
+      <Eyebrow>Pattern 02 · setup</Eyebrow>
       <div className="mt-4 max-w-6xl">
         <H2>
           Same rules. Same tracker.{" "}
@@ -864,7 +907,7 @@ E · done    · S · blocked: false`}
 
     // 19. Demo 3 · run 1 — LLM engine drifts
     <Slide key="demo3-bad" className="justify-center">
-      <Eyebrow>Demo 03 · run 1 — English → LLM</Eyebrow>
+      <Eyebrow>Pattern 02 · run 1 — English → LLM</Eyebrow>
       <div className="mt-4 max-w-6xl">
         <H2>
           Three asks. <Accent color="danger">Three answers.</Accent>
@@ -904,7 +947,7 @@ defer to author.`}
 
     // 20. Demo 3 · the change — encode the rule
     <Slide key="demo3-change" className="justify-center">
-      <Eyebrow>Demo 03 · the change</Eyebrow>
+      <Eyebrow>Pattern 02 · the change</Eyebrow>
       <div className="mt-4 max-w-6xl">
         <H2>
           Replace English with a <Accent>function</Accent>.
@@ -927,7 +970,7 @@ defer to author.`}
 
     // 21. Demo 3 · run 2 — CLI engine
     <Slide key="demo3-good" className="justify-center">
-      <Eyebrow>Demo 03 · run 2 — TypeScript → Function</Eyebrow>
+      <Eyebrow>Pattern 02 · run 2 — TypeScript → Function</Eyebrow>
       <div className="mt-4 max-w-6xl">
         <H2>
           Three runs. <Accent color="success">One answer.</Accent> Every time.
@@ -959,7 +1002,7 @@ A`}
 
     // 22. Lesson 3
     <Slide key="lesson3" hero className="justify-center">
-      <Eyebrow>Lesson 03</Eyebrow>
+      <Eyebrow>Lesson 02</Eyebrow>
       <div className="mt-6">
         <Pull>
           A workflow described to an agent is still being{" "}
@@ -970,6 +1013,40 @@ A`}
       </div>
       <FootNote>
         Both implementations are honest. Only one is reproducible.
+      </FootNote>
+    </Slide>,
+
+    // The recipe — three patterns, three fixes
+    <Slide key="recipe" className="justify-center">
+      <Eyebrow>The recipe</Eyebrow>
+      <div className="mt-3 max-w-6xl">
+        <H2>
+          Three patterns. <Accent color="success">Same shape of fix.</Accent>
+        </H2>
+        <Lede>
+          Take the thing the LLM keeps getting wrong, and put it somewhere
+          that can&rsquo;t drift.
+        </Lede>
+      </div>
+      <div className="mt-6 grid grid-cols-1 md:grid-cols-3 gap-4 w-full max-w-7xl">
+        <Panel eyebrow="Pattern 01 · tools" accent="success" title="bound the tool">
+          Tools return <span className="font-semibold">verdicts</span>, not
+          payloads. The check happens inside the tool; the agent gets back a
+          sentence.
+        </Panel>
+        <Panel eyebrow="Interlude · state" accent="success" title="own the state">
+          Bookkeeping leaves the LLM. Deterministic tools own the state.
+          The agent asks &ldquo;what&rsquo;s next?&rdquo;{" "}
+          — the tool answers.
+        </Panel>
+        <Panel eyebrow="Pattern 02 · workflow" accent="success" title="encode the workflow">
+          The non-negotiable steps live in code. The LLM does the parts that
+          actually need judgment — reading and writing, not bookkeeping.
+        </Panel>
+      </div>
+      <FootNote>
+        None of this makes the agent less capable. It makes the boundary
+        explicit.
       </FootNote>
     </Slide>,
 
