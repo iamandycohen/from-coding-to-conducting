@@ -191,12 +191,13 @@ async function validateRender(url, marker) {
       </ProofStrip>
     </Slide>,
 
-    // 5. Agents need tools, checks, and limits — the four quadrants
-    <Slide key="scaffolding" className="justify-center">
-      <Eyebrow>The slide that explains the last two years</Eyebrow>
+    // 5a. Agents need tools, checks, and limits — about the agent
+    <Slide key="scaffolding-agent" className="justify-center">
+      <Eyebrow>The slide that explains the last two years · part 1</Eyebrow>
       <div className="mt-4 max-w-6xl">
         <H2>
-          Agents need <Accent color="danger">tools, checks, and limits around them</Accent>.
+          Two things agents do{" "}
+          <Accent color="danger">on their own that hurt</Accent>.
         </H2>
       </div>
       <div className="mt-8">
@@ -216,6 +217,27 @@ async function validateRender(url, marker) {
                 "Without tools to reduce ambiguity, agents fill the gap with confident guesses.",
               color: "accent-3",
             },
+          ]}
+        />
+      </div>
+      <FootNote>
+        Both are behaviors of the agent. The next slide is about the system
+        we put around it.
+      </FootNote>
+    </Slide>,
+
+    // 5b. Agents need tools, checks, and limits — about the system around it
+    <Slide key="scaffolding-system" className="justify-center">
+      <Eyebrow>The slide that explains the last two years · part 2</Eyebrow>
+      <div className="mt-4 max-w-6xl">
+        <H2>
+          Two things the{" "}
+          <Accent color="danger">system around the agent</Accent> has to handle.
+        </H2>
+      </div>
+      <div className="mt-8">
+        <Quadrant
+          items={[
             {
               eyebrow: "03",
               title: "Context becomes budget",
@@ -719,68 +741,92 @@ $ echo $?
       </div>
     </Slide>,
 
-    // 17b. Three things we kept seeing
-    <Slide key="workflow-bad-2" className="justify-center">
-      <Eyebrow>Pattern · three things we kept seeing</Eyebrow>
+    // 17b-i. Exhibit 1 — self-contradiction
+    <Slide key="workflow-bad-2a" className="justify-center">
+      <Eyebrow>Pattern · exhibit 1</Eyebrow>
       <div className="mt-4 max-w-6xl">
         <H2>
-          When workflow lives in the agent,{" "}
-          <Accent color="danger">these show up</Accent>.
+          The agent contradicts itself{" "}
+          <Accent color="danger">in the same chat</Accent>.
         </H2>
       </div>
-      <div className="mt-6 grid grid-cols-1 md:grid-cols-3 gap-4 w-full max-w-7xl">
-        <Panel eyebrow="① self-contradiction" accent="danger" title="same chat, four minutes apart">
-          <div className="space-y-2 text-base leading-snug">
+      <div className="mt-8 w-full max-w-5xl">
+        <Panel eyebrow="same chat, four minutes apart" accent="danger" className="!p-7">
+          <div className="space-y-4 text-lg md:text-xl leading-snug">
             <div>
-              Turn 12:{" "}
+              <span className="font-mono text-sm text-[color:var(--fg-soft)] mr-2">turn 12</span>
               <span className="text-[color:var(--success)]">
                 &ldquo;Migration complete — 100% done.&rdquo;
               </span>{" "}
-              Success table attached.
+              <span className="text-[color:var(--fg-soft)] text-base">(success table attached)</span>
             </div>
             <div>
-              Turn 14:{" "}
+              <span className="font-mono text-sm text-[color:var(--fg-soft)] mr-2">turn 14</span>
               <span className="text-[color:var(--danger)]">
                 &ldquo;In progress — 53 components pending.&rdquo;
               </span>
-            </div>
-            <div className="text-sm text-[color:var(--fg-soft)] pt-1">
-              Same question. Opposite answers.
-            </div>
-          </div>
-        </Panel>
-        <Panel eyebrow="② the user becomes the memory" accent="danger" title="across days, not turns">
-          <div className="space-y-2 text-base leading-snug">
-            <div className="italic">
-              &ldquo;I remember yesterday one component was skipped due to an
-              API issue — can you confirm it was later migrated?&rdquo;
-            </div>
-            <div className="text-sm text-[color:var(--fg-soft)] pt-1">
-              When the human is carrying inventory, the bookkeeping is in the
-              wrong place.
-            </div>
-          </div>
-        </Panel>
-        <Panel eyebrow="③ rescue prompts authored upstream" accent="danger" title="the chat is a typing surface">
-          <div className="space-y-2 text-base leading-snug">
-            <div>
-              Someone outside the chat writes the unblocking prompt.
-              The human in the chat pastes it in.
-            </div>
-            <div className="text-sm text-[color:var(--fg-soft)] pt-1">
-              The orchestrator is sitting next to the keyboard, not inside the
-              system.
             </div>
           </div>
         </Panel>
       </div>
       <FootNote>
-        All three are bookkeeping symptoms. None of them are model-quality
-        problems.
+        Same question. Opposite answers. Four minutes apart.
       </FootNote>
     </Slide>,
 
-    // 17c. Why — state-in-the-document
+    // 17b-ii. Exhibit 2 — the user becomes the memory
+    <Slide key="workflow-bad-2b" className="justify-center">
+      <Eyebrow>Pattern · exhibit 2</Eyebrow>
+      <div className="mt-4 max-w-6xl">
+        <H2>
+          The user becomes{" "}
+          <Accent color="danger">the memory</Accent>.
+        </H2>
+      </div>
+      <div className="mt-8 w-full max-w-5xl">
+        <Panel eyebrow="across days, not turns" accent="danger" className="!p-7">
+          <div className="text-lg md:text-xl italic leading-relaxed">
+            &ldquo;I remember yesterday one component was skipped due to an API
+            issue — can you confirm it was later migrated?&rdquo;
+          </div>
+        </Panel>
+      </div>
+      <FootNote>
+        When the human carries the inventory, the bookkeeping is in the
+        wrong place.
+      </FootNote>
+    </Slide>,
+
+    // 17b-iii. Exhibit 3 — rescue prompts authored upstream
+    <Slide key="workflow-bad-2c" className="justify-center">
+      <Eyebrow>Pattern · exhibit 3</Eyebrow>
+      <div className="mt-4 max-w-6xl">
+        <H2>
+          The unblocking prompt{" "}
+          <Accent color="danger">comes from outside</Accent>.
+        </H2>
+      </div>
+      <div className="mt-8 w-full max-w-5xl">
+        <Panel eyebrow="the chat is a typing surface" accent="danger" className="!p-7">
+          <div className="space-y-3 text-lg md:text-xl leading-snug">
+            <div>
+              Someone outside the chat writes the unblocking prompt.
+              The human in the chat pastes it in.
+            </div>
+            <div className="text-base text-[color:var(--fg-soft)]">
+              The orchestrator is sitting next to the keyboard — not inside
+              the system.
+            </div>
+          </div>
+        </Panel>
+      </div>
+      <FootNote>
+        All three exhibits are bookkeeping symptoms. None of them are
+        model-quality problems.
+      </FootNote>
+    </Slide>,
+
+    // 17c-i. Why — state-in-the-document (the diagnosis)
     <Slide key="workflow-bad-3" className="justify-center">
       <Eyebrow>Pattern · the root cause</Eyebrow>
       <div className="mt-4 max-w-6xl">
@@ -807,11 +853,22 @@ $ echo $?
           whole thing — and quietly drops fields nobody reminded it about.
         </Panel>
       </div>
-      <div className="mt-8 max-w-5xl text-center">
+      <FootNote>
+        Three bugs. One root cause. The next slide is the prescription.
+      </FootNote>
+    </Slide>,
+
+    // 17c-ii. The prescription — take bookkeeping out of the LLM
+    <Slide key="workflow-bad-3b" hero className="justify-center">
+      <Eyebrow>Pattern · the prescription</Eyebrow>
+      <div className="mt-8">
         <Pull>
           Take the bookkeeping{" "}
-          <Accent color="success">out of the LLM</Accent>. The tool answers
-          &ldquo;what&rsquo;s next?&rdquo;. The tool records &ldquo;done.&rdquo;
+          <Accent color="success">out of the LLM</Accent>.
+          <br />
+          The tool answers &ldquo;what&rsquo;s next?&rdquo;.
+          <br />
+          The tool records &ldquo;done.&rdquo;
         </Pull>
       </div>
       <FootNote>That is what Pattern 02 is.</FootNote>
