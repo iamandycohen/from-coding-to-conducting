@@ -434,54 +434,362 @@ node   npm    git
       </FootNote>
     </Slide>,
 
-    // 8. Demo 1 · why it matters — same page, two probes, different answers
-    <Slide key="demo1-probes" className="justify-center">
+    // 12. Demo 1 · why it matters — the off-screen visual (spatial)
+    <Slide key="demo1-why-spatial" className="justify-center">
       <Eyebrow>Pattern 01 · why the difference matters</Eyebrow>
       <div className="mt-3 max-w-6xl">
         <H2>
-          Same page. Two probes.{" "}
-          <Accent color="danger">Opposite answers.</Accent>
+          The text exists.{" "}
+          <Accent color="danger">Nobody can see it.</Accent>
         </H2>
         <Lede>
-          The hero component renders the word &ldquo;Welcome&rdquo; into the
-          HTML, then a CSS rule pushes it off-screen. The text is in the
-          document. Nobody can see it.
+          The hero component renders &ldquo;Welcome&rdquo; into the HTML, then
+          a CSS rule pushes the element thousands of pixels to the left of the
+          screen. In the document. Outside the viewport.
         </Lede>
       </div>
 
-      <div className="mt-5 grid grid-cols-1 md:grid-cols-2 gap-4 w-full max-w-7xl">
-        <Panel eyebrow="what the agent ran" accent="danger" title="curl + grep" mono className="!p-5">
-{`$ curl -s https://staging.acme.com/welcome \\
-    | grep -c "Welcome"
+      <div className="mt-6 w-full max-w-7xl">
+        <svg
+          viewBox="0 0 1400 540"
+          className="w-full h-auto"
+          xmlns="http://www.w3.org/2000/svg"
+        >
+          {/* off-screen "Welcome" element on the far left */}
+          <g>
+            <rect
+              x="20"
+              y="170"
+              width="320"
+              height="140"
+              rx="10"
+              fill="color-mix(in srgb, var(--accent-2) 12%, transparent)"
+              stroke="var(--accent-2)"
+              strokeOpacity="0.6"
+              strokeDasharray="4 4"
+            />
+            <text
+              x="180"
+              y="252"
+              textAnchor="middle"
+              fill="var(--accent-2)"
+              fontSize="48"
+              fontWeight="700"
+            >
+              Welcome
+            </text>
+            <text
+              x="180"
+              y="290"
+              textAnchor="middle"
+              fill="var(--fg-soft)"
+              fontSize="13"
+              fontFamily="monospace"
+            >
+              &lt;div class=&quot;hero&quot;&gt;Welcome&lt;/div&gt;
+            </text>
+            <text
+              x="180"
+              y="335"
+              textAnchor="middle"
+              fill="var(--fg-soft)"
+              fontSize="13"
+            >
+              in the document
+            </text>
+          </g>
 
-1
+          {/* dashed offset arrow */}
+          <g
+            stroke="var(--accent-3)"
+            strokeDasharray="10 8"
+            fill="none"
+            strokeWidth="2"
+          >
+            <line x1="345" y1="240" x2="555" y2="240" />
+            <polygon
+              points="555,240 543,233 543,247"
+              fill="var(--accent-3)"
+              stroke="none"
+            />
+          </g>
+          <text
+            x="450"
+            y="220"
+            textAnchor="middle"
+            fill="var(--accent-3)"
+            fontSize="14"
+            fontFamily="monospace"
+          >
+            CSS: left: -9999px
+          </text>
+          <text
+            x="450"
+            y="268"
+            textAnchor="middle"
+            fill="var(--fg-soft)"
+            fontSize="12"
+          >
+            pushed off-screen
+          </text>
 
-$ echo $?
-0
+          {/* browser viewport on the right (what humans see) */}
+          <g>
+            <rect
+              x="570"
+              y="80"
+              width="800"
+              height="400"
+              rx="14"
+              fill="var(--bg-soft)"
+              stroke="var(--border)"
+            />
+            {/* chrome bar */}
+            <rect
+              x="570"
+              y="80"
+              width="800"
+              height="36"
+              rx="14"
+              fill="var(--border)"
+              opacity="0.4"
+            />
+            <rect
+              x="570"
+              y="110"
+              width="800"
+              height="6"
+              fill="var(--border)"
+              opacity="0.4"
+            />
+            <circle cx="592" cy="98" r="5" fill="var(--danger)" opacity="0.55" />
+            <circle cx="610" cy="98" r="5" fill="var(--accent-3)" opacity="0.55" />
+            <circle cx="628" cy="98" r="5" fill="var(--success)" opacity="0.55" />
+            <rect
+              x="660"
+              y="89"
+              width="680"
+              height="18"
+              rx="6"
+              fill="var(--bg)"
+              opacity="0.6"
+            />
+            <text
+              x="678"
+              y="102"
+              fill="var(--fg-soft)"
+              fontSize="11"
+              fontFamily="monospace"
+            >
+              https://staging.../welcome
+            </text>
 
-# ✓ "found it — ship it"`}
-        </Panel>
+            {/* empty hero placeholder */}
+            <rect
+              x="620"
+              y="160"
+              width="700"
+              height="140"
+              rx="8"
+              fill="none"
+              stroke="var(--fg-soft)"
+              strokeDasharray="6 6"
+              opacity="0.35"
+            />
+            <text
+              x="970"
+              y="225"
+              textAnchor="middle"
+              fill="var(--fg-soft)"
+              fontSize="18"
+              opacity="0.7"
+            >
+              where the hero should be
+            </text>
+            <text
+              x="970"
+              y="252"
+              textAnchor="middle"
+              fill="var(--fg-soft)"
+              fontSize="14"
+              opacity="0.6"
+              fontStyle="italic"
+            >
+              (a blank space)
+            </text>
+          </g>
 
-        <Panel eyebrow="what the probe would have said" accent="success" title="validate-render" mono className="!p-5">
-{`validate-render("/welcome", "Welcome")
+          {/* probe labels */}
+          <g>
+            <text
+              x="180"
+              y="425"
+              textAnchor="middle"
+              fill="var(--accent-3)"
+              fontSize="14"
+              fontFamily="monospace"
+              fontWeight="600"
+            >
+              curl + grep look here
+            </text>
+            <text
+              x="180"
+              y="450"
+              textAnchor="middle"
+              fill="var(--success)"
+              fontSize="16"
+              fontWeight="700"
+            >
+              ✓ &ldquo;found it&rdquo;
+            </text>
 
-{
-  marker:   "found",
-  rendered: false,
-  reason:   "element off-screen
-            (left: -9999px)",
-  screenshot: "hero-broken.png"
-}
-
-# ✗ blocked — needs a fix`}
-        </Panel>
+            <text
+              x="970"
+              y="425"
+              textAnchor="middle"
+              fill="var(--accent)"
+              fontSize="14"
+              fontFamily="monospace"
+              fontWeight="600"
+            >
+              validate-render looks here
+            </text>
+            <text
+              x="970"
+              y="450"
+              textAnchor="middle"
+              fill="var(--danger)"
+              fontSize="16"
+              fontWeight="700"
+            >
+              ✗ &ldquo;not on screen&rdquo;
+            </text>
+          </g>
+        </svg>
       </div>
 
-      <div className="mt-5 max-w-6xl text-base md:text-lg text-[color:var(--fg-soft)] text-center">
-        <span className="text-[color:var(--fg)]">What the user actually sees:</span>{" "}
-        a blank space where the hero should be.{" "}
-        <span className="italic">curl can&rsquo;t open a browser. grep can&rsquo;t see a screen.</span>
+      <FootNote>
+        Same page. Same string. The probes are looking in different places.
+      </FootNote>
+    </Slide>,
+
+    // 13. Demo 1 · why it matters — the rendering pipeline (lesson)
+    <Slide key="demo1-why-pipeline" className="justify-center">
+      <Eyebrow>Pattern 01 · why the difference matters</Eyebrow>
+      <div className="mt-2 max-w-6xl">
+        <H2>
+          The probes stop at{" "}
+          <Accent color="danger">different layers</Accent>.
+        </H2>
+        <Lede>
+          Only something that runs a real browser sees what a human sees.
+        </Lede>
       </div>
+
+      <div className="mt-4 w-full max-w-6xl">
+        {[
+          {
+            stage: "HTTP response",
+            sub: "raw bytes from the server",
+            probe: "curl reads here",
+            probeColor: "var(--accent-3)",
+            verdict: "✓ \"Welcome\" is in the bytes",
+            verdictColor: "var(--success)",
+          },
+          {
+            stage: "DOM (text)",
+            sub: "parsed HTML, as a tree of elements",
+            probe: "grep searches here",
+            probeColor: "var(--accent-3)",
+            verdict: "✓ \"Welcome\" is in the text",
+            verdictColor: "var(--success)",
+          },
+          {
+            stage: "CSSOM",
+            sub: "styles parsed and matched to elements",
+          },
+          {
+            stage: "Layout",
+            sub: "positions and sizes computed (this is where left: -9999px wins)",
+          },
+          {
+            stage: "Paint",
+            sub: "pixels actually drawn",
+          },
+          {
+            stage: "Viewport (what humans see)",
+            sub: "the visible part of the screen",
+            probe: "validate-render reads here",
+            probeColor: "var(--accent)",
+            verdict: "✗ not on screen",
+            verdictColor: "var(--danger)",
+            highlight: true,
+          },
+        ].map((row, i) => (
+          <div
+            key={i}
+            className="grid grid-cols-12 gap-3 items-center mb-1.5 last:mb-0"
+          >
+            <div
+              className={`col-span-5 rounded-lg border px-3 py-2 ${
+                row.highlight
+                  ? "border-[color:var(--accent)]/50 bg-[color:var(--accent)]/5"
+                  : "border-[color:var(--border)] bg-[color:var(--bg-soft)]/40"
+              }`}
+            >
+              <div className="text-[10px] uppercase tracking-widest font-mono text-[color:var(--fg-soft)]">
+                stage {i + 1}
+              </div>
+              <div className="text-base font-semibold leading-tight">
+                {row.stage}
+              </div>
+              <div className="text-xs text-[color:var(--fg-soft)] leading-snug">
+                {row.sub}
+              </div>
+            </div>
+
+            <div className="col-span-3 flex items-center gap-2">
+              {row.probe ? (
+                <>
+                  <span
+                    className="text-xl"
+                    style={{ color: row.probeColor }}
+                    aria-hidden
+                  >
+                    ←
+                  </span>
+                  <span
+                    className="text-sm font-mono"
+                    style={{ color: row.probeColor }}
+                  >
+                    {row.probe}
+                  </span>
+                </>
+              ) : (
+                <span className="text-xs text-[color:var(--fg-soft)] opacity-40">
+                  (no probe stops here)
+                </span>
+              )}
+            </div>
+
+            <div className="col-span-4">
+              {row.verdict ? (
+                <span
+                  className="text-sm md:text-base font-semibold"
+                  style={{ color: row.verdictColor }}
+                >
+                  {row.verdict}
+                </span>
+              ) : null}
+            </div>
+          </div>
+        ))}
+      </div>
+
+      <FootNote>
+        Any HTTP-level check is blind to visual bugs. That is not a curl
+        problem — it is a layer problem.
+      </FootNote>
     </Slide>,
 
     // 9. Demo 1 · run 1 — context decay across turns
